@@ -169,6 +169,7 @@ if (Meteor.isServer) {
     check(documentAbbr, String);
     check(version, String);
     check(language, Match.Maybe(String));
+    const sub = this;
 
     const handle = LegalCollection.find({ documentAbbr, version }, { sort: { effectiveAt: -1 } }).observeChanges({
       added(id, doc) {
@@ -180,13 +181,13 @@ if (Meteor.isServer) {
         } else if (doc.i18n) {
           delete doc.i18n;
         }
-        this.added('freedombase:legal', id, doc);
+        sub.added('freedombase:legal', id, doc);
       },
       changed(id, fields) {
-        this.changed('freedombase:legal', id, fields);
+        sub.changed('freedombase:legal', id, fields);
       },
       removed(id) {
-        this.removed('freedombase:legal', id);
+        sub.removed('freedombase:legal', id);
       }
     });
     this.ready();
@@ -233,7 +234,7 @@ if (Meteor.isServer) {
       check(changelog, Match.Maybe(Match.OneOf(String, Object)));
       check(from, Date);
       return LegalCollection.insert(
-        { documentAbbr, version, title, text, changelog, language, i18n: {}, effectiveAt: from }
+        { documentAbbr, version, title, text, changelog, language, effectiveAt: from }
       );
     },
     /**
