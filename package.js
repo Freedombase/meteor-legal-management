@@ -1,6 +1,6 @@
 Package.describe({
   name: 'freedombase:legal-management',
-  version: '1.0.0-beta.1',
+  version: '1.0.0-beta.2',
   summary: 'Manage your legal documents like TOS.',
   git: 'https://github.com/StorytellerCZ/meteor-legal-management',
   documentation: 'README.md'

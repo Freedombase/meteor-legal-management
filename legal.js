@@ -87,7 +87,7 @@ LegalCollection.allow({
 
 if (Meteor.isServer) {
   // add unique compound index for documentAbbr + version
-  LegalCollection.rawCollection().createIndex({documentAbbr: 1, version: 1}, {unique: true});
+  LegalCollection.rawCollection().createIndex({ documentAbbr: 1, version: 1 }, { unique: true });
   /**
    * Gets the latest version of the given document in the given language.
    * @param documentAbbr {String}
@@ -97,8 +97,12 @@ if (Meteor.isServer) {
   Meteor.publish('freedombase:legal.getLatest', function(documentAbbr, language) {
     check(documentAbbr, String);
     check(language, Match.Maybe(String));
+    const sub = this;
 
-    const handle = LegalCollection.find({ documentAbbr, effectiveAt: { $lte: new Date() } }, { limit: 1 }).observeChanges({
+    const handle = LegalCollection.find(
+      { documentAbbr, effectiveAt: { $lte: new Date() } },
+      { limit: 1 }
+    ).observeChanges({
       added(id, doc) {
         if (language && doc.language !== language && doc.i18n) {
           doc.title = doc.i18n[language].title;
@@ -108,13 +112,13 @@ if (Meteor.isServer) {
         } else if (doc.i18n) {
           delete doc.i18n;
         }
-        this.added('freedombase:legal', id, doc);
+        sub.added('freedombase:legal', id, doc);
       },
       changed(id, fields) {
-        this.changed('freedombase:legal', id, fields);
+        sub.changed('freedombase:legal', id, fields);
       },
       removed(id) {
-        this.removed('freedombase:legal', id);
+        sub.removed('freedombase:legal', id);
       }
     });
     this.ready();
@@ -132,6 +136,7 @@ if (Meteor.isServer) {
   Meteor.publish('freedombase:legal.getAll', function(documentAbbr, language) {
     check(documentAbbr, String);
     check(language, Match.Maybe(String));
+    const sub = this;
 
     const handle = LegalCollection.find({ documentAbbr }, { sort: { effectiveAt: -1 } }).observeChanges({
       added(id, doc) {
@@ -143,13 +148,13 @@ if (Meteor.isServer) {
         } else if (doc.i18n) {
           delete doc.i18n;
         }
-        this.added('freedombase:legal', id, doc);
+        sub.added('freedombase:legal', id, doc);
       },
       changed(id, fields) {
-        this.changed('freedombase:legal', id, fields);
+        sub.changed('freedombase:legal', id, fields);
       },
       removed(id) {
-        this.removed('freedombase:legal', id);
+        sub.removed('freedombase:legal', id);
       }
     });
     this.ready();
@@ -201,7 +206,7 @@ if (Meteor.isServer) {
    * @param documentAbbr {String}
    * @return {MongoDB Pointer}
    */
-  Meteor.publish('freedombase:legal.getVersions', (documentAbbr) => {
+  Meteor.publish('freedombase:legal.getVersions', documentAbbr => {
     check(documentAbbr, String);
 
     return LegalCollection.find(
@@ -233,9 +238,7 @@ if (Meteor.isServer) {
       check(text, Match.OneOf(String, Object));
       check(changelog, Match.Maybe(Match.OneOf(String, Object)));
       check(from, Date);
-      return LegalCollection.insert(
-        { documentAbbr, version, title, text, changelog, language, effectiveAt: from }
-      );
+      return LegalCollection.insert({ documentAbbr, version, title, text, changelog, language, effectiveAt: from });
     },
     /**
      * Add new version with i18n object.
@@ -249,7 +252,16 @@ if (Meteor.isServer) {
      * @param from {Date} From what date is the document effective.
      * @return {string} ID of the inserted document.
      */
-    'freedombase:legal.addNewVersionAll'(documentAbbr, version, language, title, text, changelog, i18n, from = new Date()) {
+    'freedombase:legal.addNewVersionAll'(
+      documentAbbr,
+      version,
+      language,
+      title,
+      text,
+      changelog,
+      i18n,
+      from = new Date()
+    ) {
       check(documentAbbr, String);
       check(version, String);
       check(language, String);
