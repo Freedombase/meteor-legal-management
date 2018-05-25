@@ -1,6 +1,6 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
-import { BaseModel } from 'meteor/socialize:base-model';
+// import { BaseModel } from 'meteor/socialize:base-model';
 
 export const LegalAgreementCollection = new Mongo.Collection('freedombase:legalAgreement');
 
@@ -63,13 +63,14 @@ const schema = new SimpleSchema({
   }
 });
 
+/*
 export class LegalAgreement extends BaseModel {
   hasAgreedById(documentId) {}
   agreeById(documentId) {}
   revokeById(documentId) {}
 }
-
-LegalAgreement.attachCollection(LegalAgreementCollection);
+*/
+// LegalAgreement.attachCollection(LegalAgreementCollection);
 LegalAgreementCollection.attachSchema(schema);
 
 LegalAgreementCollection.allow({
