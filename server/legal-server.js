@@ -14,8 +14,9 @@ Meteor.publish('freedombase:legal.getLatest', function(documentAbbr, language) {
   check(documentAbbr, String);
   check(language, Match.Maybe(String));
   const sub = this;
+  const options = { limit: 1, sort: { effectiveAt: -1 } };
 
-  const handle = LegalCollection.find({ documentAbbr, effectiveAt: { $lte: new Date() } }, { limit: 1 }).observeChanges(
+  const handle = LegalCollection.find({ documentAbbr, effectiveAt: { $lte: new Date() } }, options).observeChanges(
     {
       added(id, doc) {
         if (language && doc.language !== language && doc.i18n) {
@@ -53,6 +54,7 @@ Meteor.publish('freedombase:legal.getLatestTiny', documentAbbr => {
     { documentAbbr, effectiveAt: { $lte: new Date() } },
     {
       limit: 1,
+      sort: { effectiveAt: -1 },
       fields: {
         documentAbbr: 1,
         version: 1,

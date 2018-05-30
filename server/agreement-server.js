@@ -19,6 +19,7 @@ Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
     { ownerId },
     {
       limit: 1,
+      sort: { ownerId: -1 },
       fields: {
         ownerId: 1,
         agreements: 1,
@@ -44,6 +45,7 @@ Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
     { ownerId },
     {
       limit: 1,
+      sort: { ownerId: -1 },
       fields: {
         ownerId: 1,
         history: 1,
@@ -65,7 +67,7 @@ Meteor.publish('freedombase:legal.agreements.full', (ownerId = 'user') => {
     ownerId = this.userId;
   }
 
-  return LegalAgreementCollection.find({ ownerId }, { limit: 1 });
+  return LegalAgreementCollection.find({ ownerId }, { limit: 1, sort: { ownerId: -1 } });
 });
 
 Meteor.methods({
