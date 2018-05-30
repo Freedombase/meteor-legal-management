@@ -12,19 +12,19 @@ Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
   check(ownerId, String);
 
   if (ownerId === 'user') {
-    ownerId = this.userId;
+    ownerId = Meteor.userId();
   }
 
   return LegalAgreementCollection.find(
     { ownerId },
     {
-      limit: 1,
-      sort: { ownerId: -1 },
       fields: {
         ownerId: 1,
         agreements: 1,
         updatedAt: 1
-      }
+      },
+      limit: 1,
+      sort: { ownerId: 1 }
     }
   );
 });
@@ -38,19 +38,19 @@ Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
   check(ownerId, String);
 
   if (ownerId === 'user') {
-    ownerId = this.userId;
+    ownerId = Meteor.userId();
   }
 
   return LegalAgreementCollection.find(
     { ownerId },
     {
-      limit: 1,
-      sort: { ownerId: -1 },
       fields: {
         ownerId: 1,
         history: 1,
         updatedAt: 1
-      }
+      },
+      limit: 1,
+      sort: { ownerId: 1 }
     }
   );
 });
@@ -64,10 +64,10 @@ Meteor.publish('freedombase:legal.agreements.full', (ownerId = 'user') => {
   check(ownerId, String);
 
   if (ownerId === 'user') {
-    ownerId = this.userId;
+    ownerId = Meteor.userId();
   }
 
-  return LegalAgreementCollection.find({ ownerId }, { limit: 1, sort: { ownerId: -1 } });
+  return LegalAgreementCollection.find({ ownerId }, { limit: 1, sort: { userId: -1 } });
 });
 
 Meteor.methods({
@@ -85,7 +85,7 @@ Meteor.methods({
     );
     const elemMatch = { $elemMatch: { documentId: doc._id, documentAbbr: doc.documentAbbr } };
     const agr = LegalAgreementCollection.findOne(
-      { ownerId: this.userId, agreements: elemMatch },
+      { ownerId: Meteor.userId(), agreements: elemMatch },
       { fields: { agreements: 1 } }
     );
     if (agr) {
@@ -104,7 +104,7 @@ Meteor.methods({
       );
     } else {
       return LegalAgreementCollection.update(
-        { ownerId: this.userId },
+        { ownerId: Meteor.userId() },
         {
           $addToSet: {
             agreements: { documentAbbr: doc.documentAbbr, documentId: doc._id, agreed: true },
@@ -123,7 +123,7 @@ Meteor.methods({
     check(what, String);
 
     return LegalAgreementCollection.update(
-      { ownerId: this.userId, agreements: { $elemMatch: { $or: [{ documentId: what }, { documentAbbr: what }] } } },
+      { ownerId: Meteor.userId(), agreements: { $elemMatch: { $or: [{ documentId: what }, { documentAbbr: what }] } } },
       {
         $set: { 'agreements.$.agreed': false },
         $addToSet: {
