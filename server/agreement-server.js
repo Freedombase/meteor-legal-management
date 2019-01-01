@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 import { LegalAgreementCollection } from '../common/agreement';
 import { LegalCollection } from '../common/legal';
 
@@ -73,64 +73,88 @@ Meteor.publish('freedombase:legal.agreements.full', (ownerId = 'user') => {
 Meteor.methods({
   /**
    * Give agreement to the given document.
-   * @param what {String} Id or abbreviation of the legal document
-   * @return {Boolean}
+   * @param what {String|Array} Ids or abbreviations of the legal document
+   * @return {Array} Array of results of update functions
    */
   'freedombase:legal.agreements.agreeBy'(what) {
-    check(what, String);
+    check(what, Match.OneOf(String, [String]));
 
-    const doc = LegalCollection.findOne(
-      { $or: [{ _id: what }, { documentAbbr: what }] },
-      { fields: { documentAbbr: 1 } }
-    );
-    const elemMatch = { $elemMatch: { documentId: doc._id, documentAbbr: doc.documentAbbr } };
-    const agr = LegalAgreementCollection.findOne(
-      { ownerId: Meteor.userId(), agreements: elemMatch },
-      { fields: { agreements: 1 } }
-    );
-    if (agr) {
-      return LegalAgreementCollection.update(
-        { ownerId: this.userId, agreements: elemMatch },
-        {
-          $set: {
-            'agreements.$.documentAbbr': doc.documentAbbr,
-            'agreements.$.documentId': doc._id,
-            'agreements.$.agreed': true
-          },
-          $addToSet: {
-            history: { createdAt: new Date(), agreement: what, action: 'agreed' }
-          }
-        }
-      );
-    } else {
-      return LegalAgreementCollection.update(
-        { ownerId: Meteor.userId() },
-        {
-          $addToSet: {
-            agreements: { documentAbbr: doc.documentAbbr, documentId: doc._id, agreed: true },
-            history: { createdAt: new Date(), agreement: what, action: 'agreed' }
-          }
-        }
-      );
+    let legalDocs = what;
+    if (!Array.isArray(what)) {
+      legalDocs = [ what ];
     }
+
+    // TODO figure out how to do in bulk
+    return legalDocs.map(legalDoc => {
+      // Get the legal document
+      const doc = LegalCollection.findOne(
+        { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }] },
+        { fields: { documentAbbr: 1 } }
+      );
+
+      // Prepare a matcher for agreements collection
+      const elemMatch = { $elemMatch: { documentId: doc._id, documentAbbr: doc.documentAbbr } };
+
+      // Check if we have existing agreements
+      const agr = LegalAgreementCollection.findOne(
+        { ownerId: Meteor.userId(), agreements: elemMatch },
+        { fields: { agreements: 1 } }
+      );
+      if (agr) {
+        return LegalAgreementCollection.update(
+          { ownerId: this.userId, agreements: elemMatch },
+          {
+            $set: {
+              'agreements.$.documentAbbr': doc.documentAbbr,
+              'agreements.$.documentId': doc._id,
+              'agreements.$.agreed': true
+            },
+            $addToSet: {
+              history: { createdAt: new Date(), agreement: legalDoc, action: 'agreed' }
+            }
+          }
+        );
+      } else {
+        // Create new agreement for user
+        return LegalAgreementCollection.upsert(
+          { ownerId: this.userId },
+          {
+            $addToSet: {
+              agreements: { documentAbbr: doc.documentAbbr, documentId: doc._id, agreed: true },
+              history: { createdAt: new Date(), agreement: legalDoc, action: 'agreed' }
+            }
+          }
+        );
+      }
+    });
   },
   /**
    * Revoke agreement to the given document.
-   * @param what {String} Id or abbreviation of the legal document
-   * @returns {Boolean}
+   * @param what {String|Array} Ids or abbreviations of the legal document
+   * @returns {Array} Array of results of update functions
    */
   'freedombase:legal.agreements.revokeBy'(what) {
-    check(what, String);
+    check(what, Match.OneOf(String, [String]));
 
-    return LegalAgreementCollection.update(
-      { ownerId: Meteor.userId(), agreements: { $elemMatch: { $or: [{ documentId: what }, { documentAbbr: what }] } } },
-      {
-        $set: { 'agreements.$.agreed': false },
-        $addToSet: {
-          history: { createdAt: new Date(), agreement: what, action: 'revoked' }
+    let legalDocs = what;
+    if (!Array.isArray(what)) {
+      legalDocs = [ what ];
+    }
+
+    return legalDocs.map(legalDoc => {
+      return LegalAgreementCollection.update(
+        {
+          ownerId: this.userId,
+          agreements: { $elemMatch: { $or: [{ documentId: legalDoc }, { documentAbbr: legalDoc }] } }
+        },
+        {
+          $set: { 'agreements.$.agreed': false },
+          $addToSet: {
+            history: { createdAt: new Date(), agreement: legalDoc, action: 'revoked' }
+          }
         }
-      }
-    );
+      );
+    });
   }
   /**
    * Resets agreement for type of legal document when a new version is available.

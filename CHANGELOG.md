@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.2.0 - 2019-01-01
+### Added
+  - a
+
 ## v1.1.0 - 2018-05-30
 ### Added
   - Limiting and sorting for better Oplog support and performance.

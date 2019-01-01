@@ -48,8 +48,8 @@ Meteor.users.after.insert((userId, document) => {
         // the user had to agree to be able to access the registration page
         // TODO adjust to your needs
         Meteor.call('freedombase:legal.agreements.agreeBy', 'tos');
-        Meteor.call('freedombase:legal.agreements.agreeBy', 'privacy');
-        Meteor.call('freedombase:legal.agreements.agreeBy', 'copyright');
+        // or
+        // Meteor.call('freedombase:legal.agreements.agreeBy', ['tos', 'privacy', 'copyright']);
       }
     });
 });
@@ -131,13 +131,13 @@ Gets version list for the given document abbreviation.
 
 #### `freedombase:legal.agreements.agreeBy`
 Give agreement to the given document by the currently logged in user.
-   * @param `what` {String} Id or abbreviation of the legal document
-   * @return {Boolean}
+   * @param `what` {String|Array} Ids or abbreviations of the legal document
+   * @returns {Array} Array of results of update functions
 
 #### `freedombase:legal.agreements.revokeBy`
 Revoke agreement to the given document by the currently logged in user.
-   * @param what {String} Id or abbreviation of the legal document
-   * @returns {Boolean}
+   * @param `what` {String|Array} Ids or abbreviations of the legal document
+   * @returns {Array} Array of results of update functions
 
 ### Publications
 
