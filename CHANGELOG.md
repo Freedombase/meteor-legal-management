@@ -2,7 +2,7 @@
 
 ## v1.2.0 - 2019-01-01
 ### Added
-  - a
+  - Methods `freedombase:legal.agreements.agreeBy` and `freedombase:legal.agreements.revokeBy` now also accept array input.
 
 ## v1.1.0 - 2018-05-30
 ### Added
