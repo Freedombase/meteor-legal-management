@@ -1,4 +1,8 @@
 # CHANGELOG
+## v1.3.0 - unreleased
+### Changed
+  - Make `createdAt` optional parameters so that they can be auto created.
+  - Added optional parameter `userId` to `freedombase:legal.agreements.agreeBy` method to allow usage in `Meteor.users.after.insert` hook when user might be still logging in and the `userId` is not yet set. `Meteor.userId()` will take precedent before this variable.
 
 ## v1.2.0 - 2019-01-01
 ### Added

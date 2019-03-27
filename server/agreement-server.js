@@ -6,7 +6,7 @@ import { LegalCollection } from '../common/legal';
 /**
  * Gets agreements/consent to legal documents.
  * @param ownerId {String}
- * @returns {MongoDB pointer}
+ * @returns {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
   check(ownerId, String);
@@ -32,7 +32,7 @@ Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
 /**
  * Get history of consent changes.
  * @param ownerId {String}
- * @returns {MongoDB pointer}
+ * @returns {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
   check(ownerId, String);
@@ -58,7 +58,7 @@ Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
 /**
  * Get all the data
  * @param ownerId {String}
- * @returns {MongoDB pointer}
+ * @returns {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.agreements.full', (ownerId = 'user') => {
   check(ownerId, String);
@@ -74,17 +74,23 @@ Meteor.methods({
   /**
    * Give agreement to the given document.
    * @param what {String|Array} Ids or abbreviations of the legal document
+   * @param userId {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
    * @return {Array} Array of results of update functions
    */
-  'freedombase:legal.agreements.agreeBy'(what) {
+  'freedombase:legal.agreements.agreeBy'(what, userId = null) {
     check(what, Match.OneOf(String, [String]));
+    check(userId, Match.Maybe(String));
+    const ownerId = this.userId || Meteor.userId() || userId;
+
+    if (!ownerId) {
+      throw new Meteor.Error('User needs to be logged in.');
+    }
 
     let legalDocs = what;
     if (!Array.isArray(what)) {
       legalDocs = [ what ];
     }
 
-    // TODO figure out how to do in bulk
     return legalDocs.map(legalDoc => {
       // Get the legal document
       const doc = LegalCollection.findOne(
@@ -97,12 +103,12 @@ Meteor.methods({
 
       // Check if we have existing agreements
       const agr = LegalAgreementCollection.findOne(
-        { ownerId: Meteor.userId(), agreements: elemMatch },
+        { ownerId, agreements: elemMatch },
         { fields: { agreements: 1 } }
       );
       if (agr) {
         return LegalAgreementCollection.update(
-          { ownerId: this.userId, agreements: elemMatch },
+          { ownerId, agreements: elemMatch },
           {
             $set: {
               'agreements.$.documentAbbr': doc.documentAbbr,
@@ -117,7 +123,7 @@ Meteor.methods({
       } else {
         // Create new agreement for user
         return LegalAgreementCollection.upsert(
-          { ownerId: this.userId },
+          { ownerId },
           {
             $addToSet: {
               agreements: { documentAbbr: doc.documentAbbr, documentId: doc._id, agreed: true },
@@ -135,6 +141,11 @@ Meteor.methods({
    */
   'freedombase:legal.agreements.revokeBy'(what) {
     check(what, Match.OneOf(String, [String]));
+    const ownerId = this.userId || Meteor.userId();
+
+    if (!ownerId) {
+      throw new Meteor.Error('User needs to be logged in.');
+    }
 
     let legalDocs = what;
     if (!Array.isArray(what)) {
@@ -144,7 +155,7 @@ Meteor.methods({
     return legalDocs.map(legalDoc => {
       return LegalAgreementCollection.update(
         {
-          ownerId: this.userId,
+          ownerId,
           agreements: { $elemMatch: { $or: [{ documentId: legalDoc }, { documentAbbr: legalDoc }] } }
         },
         {

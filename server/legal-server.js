@@ -8,7 +8,7 @@ LegalCollection.rawCollection().createIndex({ documentAbbr: 1, version: 1 }, { u
  * Gets the latest version of the given document in the given language.
  * @param documentAbbr {String}
  * @param language {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.getLatest', function(documentAbbr, language) {
   check(documentAbbr, String);
@@ -44,7 +44,7 @@ Meteor.publish('freedombase:legal.getLatest', function(documentAbbr, language) {
 /**
  * Gets the minimum document info for the latest version of the document.
  * @params documentAbbr {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.getLatestTiny', documentAbbr => {
   check(documentAbbr, String);
@@ -66,7 +66,7 @@ Meteor.publish('freedombase:legal.getLatestTiny', documentAbbr => {
  * Get full version of all documents in the given language.
  * @param documentAbbr {String}
  * @param language {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.getAll', function(documentAbbr, language) {
   check(documentAbbr, String);
@@ -103,7 +103,7 @@ Meteor.publish('freedombase:legal.getAll', function(documentAbbr, language) {
  * @param documentAbbr {String}
  * @param version {String}
  * @param language {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.get', function(documentAbbr, version, language) {
   check(documentAbbr, String);
@@ -142,7 +142,7 @@ Meteor.publish('freedombase:legal.get', function(documentAbbr, version, language
 /**
  * Gets version list for the given document abbreviation.
  * @param documentAbbr {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.getVersions', documentAbbr => {
   check(documentAbbr, String);

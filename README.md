@@ -1,5 +1,7 @@
 # freedombase:legal-management 📄
 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
 Management of legal documents like Terms of Service and user consent made easy.
 
 This package adds the basic functionality to manage your legal documents and makes them easily accessible for users together with managing user's consent. This package provides server side publications and methods.
@@ -47,9 +49,9 @@ Meteor.users.after.insert((userId, document) => {
       if (id) {
         // the user had to agree to be able to access the registration page
         // TODO adjust to your needs
-        Meteor.call('freedombase:legal.agreements.agreeBy', 'tos');
+        Meteor.call('freedombase:legal.agreements.agreeBy', 'tos', document._id);
         // or
-        // Meteor.call('freedombase:legal.agreements.agreeBy', ['tos', 'privacy', 'copyright']);
+        // Meteor.call('freedombase:legal.agreements.agreeBy', ['tos', 'privacy', 'copyright'], document._id);
       }
     });
 });
@@ -105,25 +107,25 @@ Update changelog for the given language.
 Gets the latest version of the given document in the given language.
  * @param `documentAbbr` {String}
  * @param `language` {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
  
 #### `freedombase:legal.getAll`
 Get full version of all documents in the given language.
  * @param `documentAbbr` {String}
  * @param `language` {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
 
 #### `freedombase:legal.get`
 Get full version of the given documents of the given version in the given language.
    * @param `documentAbbr` {String}
    * @param `version` {String}
    * @param `language` {String}
-   * @return {MongoDB Pointer}
+   * @return {Mongo.Cursor}
 
 #### `freedombase:legal.getVersions`
 Gets version list for the given document abbreviation.
  * @param `documentAbbr` {String}
- * @return {MongoDB Pointer}
+ * @return {Mongo.Cursor}
 
 ## API - Consent
 
@@ -132,6 +134,7 @@ Gets version list for the given document abbreviation.
 #### `freedombase:legal.agreements.agreeBy`
 Give agreement to the given document by the currently logged in user.
    * @param `what` {String|Array} Ids or abbreviations of the legal document
+   * @param `userId` {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
    * @returns {Array} Array of results of update functions
 
 #### `freedombase:legal.agreements.revokeBy`
@@ -144,14 +147,14 @@ Revoke agreement to the given document by the currently logged in user.
 #### `freedombase:legal.agreements.for`
 Gets agreements/consent to legal documents.
  * @param `ownerId` {String} OPTIONAL, will default to the current user.
- * @returns {MongoDB pointer}
+ * @returns {Mongo.Cursor}
 
  #### `freedombase:legal.agreements.history`
  Get history of consent changes.
  * @param `ownerId` {String} OPTIONAL, will default to the current user.
- * @returns {MongoDB pointer}
+ * @returns {Mongo.Cursor}
 
  #### `freedombase:legal.agreements.full`
  Get all the data
  * @param ownerId {String} OPTIONAL, will default to the current user.
- * @returns {MongoDB pointer}
+ * @returns {Mongo.Cursor}

@@ -48,6 +48,7 @@ const schema = new SimpleSchema({
   },
   createdAt: {
     type: Date,
+    optional: true, // Will be automatically created if not passed in
     autoValue() {
       if (this.isInsert) return new Date();
     },

@@ -55,6 +55,7 @@ const schema = new SimpleSchema({
   */
   createdAt: {
     type: Date,
+    optional: true,
     autoValue() {
       if (this.isInsert || !this.isFromTrustedCode) return new Date();
     },
