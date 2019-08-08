@@ -1,6 +1,6 @@
 Package.describe({
   name: 'freedombase:legal-management',
-  version: '1.3.1',
+  version: '1.3.2',
   summary: 'Manage your legal documents and user consent.',
   git: 'https://github.com/freedombase/meteor-legal-management',
   documentation: 'README.md'
@@ -9,7 +9,7 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.4.1');
   api.use(['meteor', 'ecmascript', 'check', 'mongo']);
-  api.use(['aldeed:collection2@3.0.0']);
+  api.use(['aldeed:collection2@3.0.2']);
   // 'socialize:base-model@1.1.2'
 
   api.mainModule('common.js', 'client');

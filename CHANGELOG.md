@@ -1,4 +1,8 @@
 # CHANGELOG
+## v1.3.2 - UNRELEASED
+### Changes
+  - Updated `aldeed:collection2` to 3.0.2.
+
 ## v1.3.1 - 2019-08-08
 ### Fixes/Changed
   - In case a document is not available in the requested language, default to the primary language of the document. Fixes a bug where document would return empty on subscription if it did not exists in the requested language.
