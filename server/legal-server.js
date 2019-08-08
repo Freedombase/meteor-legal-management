@@ -19,9 +19,9 @@ Meteor.publish('freedombase:legal.getLatest', function(documentAbbr, language) {
   const handle = LegalCollection.find({ documentAbbr, effectiveAt: { $lte: new Date() } }, options).observeChanges({
     added(id, doc) {
       if (language && doc.language !== language && doc.i18n) {
-        doc.title = doc.i18n[language].title;
-        doc.text = doc.i18n[language].text;
-        doc.changelog = doc.i18n[language].changelog;
+        if (doc.i18n[language].title) doc.title = doc.i18n[language].title;
+        if (doc.i18n[language].text) doc.text = doc.i18n[language].text;
+        if (doc.i18n[language].changelog) doc.changelog = doc.i18n[language].changelog;
         delete doc.i18n;
       } else if (doc.i18n) {
         delete doc.i18n;
@@ -76,9 +76,9 @@ Meteor.publish('freedombase:legal.getAll', function(documentAbbr, language) {
   const handle = LegalCollection.find({ documentAbbr }, { sort: { effectiveAt: -1 } }).observeChanges({
     added(id, doc) {
       if (language && doc.language !== language && doc.i18n) {
-        doc.title = doc.i18n[language].title;
-        doc.text = doc.i18n[language].text;
-        doc.changelog = doc.i18n[language].changelog;
+        if (doc.i18n[language].title) doc.title = doc.i18n[language].title;
+        if (doc.i18n[language].text) doc.text = doc.i18n[language].text;
+        if (doc.i18n[language].changelog) doc.changelog = doc.i18n[language].changelog;
         delete doc.i18n;
       } else if (doc.i18n) {
         delete doc.i18n;
@@ -117,9 +117,9 @@ Meteor.publish('freedombase:legal.get', function(documentAbbr, version, language
   ).observeChanges({
     added(id, doc) {
       if (language && doc.language !== language && doc.i18n) {
-        doc.title = doc.i18n[language].title;
-        doc.text = doc.i18n[language].text;
-        doc.changelog = doc.i18n[language].changelog;
+        if (doc.i18n[language].title) doc.title = doc.i18n[language].title;
+        if (doc.i18n[language].text) doc.text = doc.i18n[language].text;
+        if (doc.i18n[language].changelog) doc.changelog = doc.i18n[language].changelog;
         delete doc.i18n;
       } else if (doc.i18n) {
         delete doc.i18n;

@@ -1,5 +1,9 @@
 # CHANGELOG
-## v1.3.0 - unreleased
+## v1.3.1 - 2019-08-08
+### Fixes/Changed
+  - In case a document is not available in the requested language, default to the primary language of the document. Fixes a bug where document would return empty on subscription if it did not exists in the requested language.
+
+## v1.3.0 - 2019-03-27
 ### Changed
   - Make `createdAt` optional parameters so that they can be auto created.
   - Added optional parameter `userId` to `freedombase:legal.agreements.agreeBy` method to allow usage in `Meteor.users.after.insert` hook when user might be still logging in and the `userId` is not yet set. `Meteor.userId()` will take precedent before this variable.
