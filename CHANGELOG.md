@@ -1,7 +1,9 @@
 # CHANGELOG
-## v1.3.2 - UNRELEASED
-### Changes
+## v1.3.2 - 2019-10-20
+### Changes/Updates
   - Updated `aldeed:collection2` to 3.0.2.
+  - Made error messages more clear.
+  - Bumped minimum Meteor version to 1.4.2.7 which the minimal feature version and latest patch version (of that feature version) to actually support this package.
 
 ## v1.3.1 - 2019-08-08
 ### Fixes/Changed

@@ -83,7 +83,7 @@ Meteor.methods({
     const ownerId = this.userId || Meteor.userId() || userId;
 
     if (!ownerId) {
-      throw new Meteor.Error('User needs to be logged in.');
+      throw new Meteor.Error('User needs to be logged in to agree.');
     }
 
     let legalDocs = what;
@@ -144,7 +144,7 @@ Meteor.methods({
     const ownerId = this.userId || Meteor.userId();
 
     if (!ownerId) {
-      throw new Meteor.Error('User needs to be logged in.');
+      throw new Meteor.Error('User needs to be logged in to revoke agreement.');
     }
 
     let legalDocs = what;

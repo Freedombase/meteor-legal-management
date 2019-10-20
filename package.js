@@ -7,7 +7,7 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom('1.4.1');
+  api.versionsFrom('1.4.2.7');
   api.use(['meteor', 'ecmascript', 'check', 'mongo']);
   api.use(['aldeed:collection2@3.0.2']);
   // 'socialize:base-model@1.1.2'
