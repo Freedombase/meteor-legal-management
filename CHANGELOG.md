@@ -1,4 +1,10 @@
 # CHANGELOG
+## v1.4.0 - unreleased
+## Updates
+  - Bumped minimum Meteor version to 1.8.1
+
+## New
+
 ## v1.3.2 - 2019-10-20
 ### Changes/Updates
   - Updated `aldeed:collection2` to 3.0.2.
