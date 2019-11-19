@@ -1,8 +1,8 @@
-import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
+import { Mongo } from 'meteor/mongo'
+import SimpleSchema from 'simpl-schema'
 // import { BaseModel } from 'meteor/socialize:base-model';
 
-export const LegalAgreementCollection = new Mongo.Collection('freedombase:legalAgreement');
+export const LegalAgreementCollection = new Mongo.Collection('freedombase:legalAgreement')
 
 const schema = new SimpleSchema({
   ownerId: {
@@ -49,19 +49,19 @@ const schema = new SimpleSchema({
   createdAt: {
     type: Date,
     optional: true, // Will be automatically created if not passed in
-    autoValue() {
-      if (this.isInsert) return new Date();
+    autoValue () {
+      if (this.isInsert) return new Date()
     },
     denyUpdate: true
   },
   updatedAt: {
     type: Date,
     optional: true,
-    autoValue() {
-      if (this.isInsert || this.isUpdate) return new Date();
+    autoValue () {
+      if (this.isInsert || this.isUpdate) return new Date()
     }
   }
-});
+})
 
 /*
 export class LegalAgreement extends BaseModel {
@@ -71,16 +71,16 @@ export class LegalAgreement extends BaseModel {
 }
 */
 // LegalAgreement.attachCollection(LegalAgreementCollection);
-LegalAgreementCollection.attachSchema(schema);
+LegalAgreementCollection.attachSchema(schema)
 
 LegalAgreementCollection.allow({
-  insert(userId) {
-    return !!userId;
+  insert (userId) {
+    return !!userId
   },
-  update(userId, document) {
-    return userId === document.ownerId;
+  update (userId, document) {
+    return userId === document.ownerId
   },
-  remove() {
-    return false;
+  remove () {
+    return false
   }
-});
+})

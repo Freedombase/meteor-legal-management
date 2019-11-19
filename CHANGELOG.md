@@ -1,15 +1,19 @@
 # CHANGELOG
-## v1.4.0 - unreleased
+## v1.4.0 - 2019-11-20
 ## Updates
-  - Bumped minimum Meteor version to 1.8.1
+  - Bumped minimum Meteor version to `v1.8.1`
+  - Updated `aldeed:collection2` to `v3.0.3`
+  - Added GitHub templates and other related stuff
 
 ## New
+  - Code re-formatted according to Standard.js rules
+  - Added [All Contributors](https://allcontributors.org/)
 
 ## v1.3.2 - 2019-10-20
 ### Changes/Updates
-  - Updated `aldeed:collection2` to 3.0.2.
+  - Updated `aldeed:collection2` to `v3.0.2`.
   - Made error messages more clear.
-  - Bumped minimum Meteor version to 1.4.2.7 which the minimal feature version and latest patch version (of that feature version) to actually support this package.
+  - Bumped minimum Meteor version to `v1.4.2.7` which the minimal feature version and latest patch version (of that feature version) to actually support this package.
 
 ## v1.3.1 - 2019-08-08
 ### Fixes/Changed

@@ -1,7 +1,7 @@
-import { Meteor } from 'meteor/meteor';
-import { check, Match } from 'meteor/check';
-import { LegalAgreementCollection } from '../common/agreement';
-import { LegalCollection } from '../common/legal';
+import { Meteor } from 'meteor/meteor'
+import { check, Match } from 'meteor/check'
+import { LegalAgreementCollection } from '../common/agreement'
+import { LegalCollection } from '../common/legal'
 
 /**
  * Gets agreements/consent to legal documents.
@@ -9,10 +9,10 @@ import { LegalCollection } from '../common/legal';
  * @returns {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
-  check(ownerId, String);
+  check(ownerId, String)
 
   if (ownerId === 'user') {
-    ownerId = Meteor.userId();
+    ownerId = Meteor.userId()
   }
 
   return LegalAgreementCollection.find(
@@ -26,8 +26,8 @@ Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
       limit: 1,
       sort: { ownerId: 1 }
     }
-  );
-});
+  )
+})
 
 /**
  * Get history of consent changes.
@@ -35,10 +35,10 @@ Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
  * @returns {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
-  check(ownerId, String);
+  check(ownerId, String)
 
   if (ownerId === 'user') {
-    ownerId = Meteor.userId();
+    ownerId = Meteor.userId()
   }
 
   return LegalAgreementCollection.find(
@@ -52,8 +52,8 @@ Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
       limit: 1,
       sort: { ownerId: 1 }
     }
-  );
-});
+  )
+})
 
 /**
  * Get all the data
@@ -61,14 +61,14 @@ Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
  * @returns {Mongo.Cursor}
  */
 Meteor.publish('freedombase:legal.agreements.full', (ownerId = 'user') => {
-  check(ownerId, String);
+  check(ownerId, String)
 
   if (ownerId === 'user') {
-    ownerId = Meteor.userId();
+    ownerId = Meteor.userId()
   }
 
-  return LegalAgreementCollection.find({ ownerId }, { limit: 1, sort: { userId: -1 } });
-});
+  return LegalAgreementCollection.find({ ownerId }, { limit: 1, sort: { userId: -1 } })
+})
 
 Meteor.methods({
   /**
@@ -77,18 +77,18 @@ Meteor.methods({
    * @param userId {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
    * @return {Array} Array of results of update functions
    */
-  'freedombase:legal.agreements.agreeBy'(what, userId = null) {
-    check(what, Match.OneOf(String, [String]));
-    check(userId, Match.Maybe(String));
-    const ownerId = this.userId || Meteor.userId() || userId;
+  'freedombase:legal.agreements.agreeBy' (what, userId = null) {
+    check(what, Match.OneOf(String, [String]))
+    check(userId, Match.Maybe(String))
+    const ownerId = this.userId || Meteor.userId() || userId
 
     if (!ownerId) {
-      throw new Meteor.Error('User needs to be logged in to agree.');
+      throw new Meteor.Error('User needs to be logged in to agree.')
     }
 
-    let legalDocs = what;
+    let legalDocs = what
     if (!Array.isArray(what)) {
-      legalDocs = [ what ];
+      legalDocs = [what]
     }
 
     return legalDocs.map(legalDoc => {
@@ -96,16 +96,16 @@ Meteor.methods({
       const doc = LegalCollection.findOne(
         { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }] },
         { fields: { documentAbbr: 1 } }
-      );
+      )
 
       // Prepare a matcher for agreements collection
-      const elemMatch = { $elemMatch: { documentId: doc._id, documentAbbr: doc.documentAbbr } };
+      const elemMatch = { $elemMatch: { documentId: doc._id, documentAbbr: doc.documentAbbr } }
 
       // Check if we have existing agreements
       const agr = LegalAgreementCollection.findOne(
         { ownerId, agreements: elemMatch },
         { fields: { agreements: 1 } }
-      );
+      )
       if (agr) {
         return LegalAgreementCollection.update(
           { ownerId, agreements: elemMatch },
@@ -119,7 +119,7 @@ Meteor.methods({
               history: { createdAt: new Date(), agreement: legalDoc, action: 'agreed' }
             }
           }
-        );
+        )
       } else {
         // Create new agreement for user
         return LegalAgreementCollection.upsert(
@@ -130,26 +130,26 @@ Meteor.methods({
               history: { createdAt: new Date(), agreement: legalDoc, action: 'agreed' }
             }
           }
-        );
+        )
       }
-    });
+    })
   },
   /**
    * Revoke agreement to the given document.
    * @param what {String|Array} Ids or abbreviations of the legal document
    * @returns {Array} Array of results of update functions
    */
-  'freedombase:legal.agreements.revokeBy'(what) {
-    check(what, Match.OneOf(String, [String]));
-    const ownerId = this.userId || Meteor.userId();
+  'freedombase:legal.agreements.revokeBy' (what) {
+    check(what, Match.OneOf(String, [String]))
+    const ownerId = this.userId || Meteor.userId()
 
     if (!ownerId) {
-      throw new Meteor.Error('User needs to be logged in to revoke agreement.');
+      throw new Meteor.Error('User needs to be logged in to revoke agreement.')
     }
 
-    let legalDocs = what;
+    let legalDocs = what
     if (!Array.isArray(what)) {
-      legalDocs = [ what ];
+      legalDocs = [what]
     }
 
     return legalDocs.map(legalDoc => {
@@ -164,8 +164,8 @@ Meteor.methods({
             history: { createdAt: new Date(), agreement: legalDoc, action: 'revoked' }
           }
         }
-      );
-    });
+      )
+    })
   }
   /**
    * Resets agreement for type of legal document when a new version is available.
@@ -190,5 +190,5 @@ Meteor.methods({
         }
       }
     );
-  }*/
-});
+  } */
+})

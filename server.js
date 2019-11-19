@@ -1,4 +1,4 @@
-import './server/agreement-server';
-import './server/legal-server';
+import './server/agreement-server'
+import './server/legal-server'
 
-export { LegalAgreementCollection, LegalCollection } from './common';
+export { LegalAgreementCollection, LegalCollection } from './common'

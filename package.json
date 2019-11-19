@@ -1,0 +1,39 @@
+{
+  "name": "meteor-legal-management",
+  "version": "1.4.0",
+  "private": true,
+  "description": "Management of legal documents like Terms of Service and user consent made easy.",
+  "main": "package.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freedombase/meteor-legal-management.git"
+  },
+  "bugs": {
+    "url": "https://github.com/freedombase/meteor-legal-management/issues"
+  },
+  "homepage": "https://github.com/freedombase/meteor-legal-management#readme",
+  "readme": "README.md",
+  "scripts": {
+    "test": "npm run lint && meteor test-packages ./",
+    "lint": "./node_modules/.bin/standard --fix",
+    "publish": "npm prune --production && meteor publish && meteor npm i",
+    "all-contributors": "./node_modules/.bin/all-contributors",
+    "all-contributors-generate": "./node_modules/.bin/all-contributors generate"
+  },
+  "author": "Jan Dvorak",
+  "license": "MIT",
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run all-contributors-generate"
+    }
+  },
+  "devDependencies": {
+    "all-contributors-cli": "^6.11.0",
+    "babel-eslint": "^10.0.3",
+    "husky": "^3.0.9",
+    "standard": "^14.3.1"
+  }
+}

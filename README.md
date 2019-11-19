@@ -1,12 +1,15 @@
 # freedombase:legal-management 📄
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+![GitHub](https://img.shields.io/github/license/Meteor-Community-Packages/template-package)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Freedombase/meteor-legal-management.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Freedombase/meteor-legal-management/context:javascript) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![](https://img.shields.io/badge/semver-2.0.0-success)](http://semver.org/spec/v2.0.0.html)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/freedombase/meteor-legal-management?label=latest&sort=semver)
 
 Management of legal documents like Terms of Service and user consent made easy.
 
 This package adds the basic functionality to manage your legal documents and makes them easily accessible for users together with managing user's consent. This package provides server side publications and methods.
-
-Made by [@StorytellerCZ](https://www.github.com/StorytellerCZ).
 
 ## Install
 
@@ -56,6 +59,25 @@ Meteor.users.after.insert((userId, document) => {
     });
 });
 ```
+
+## Contributors ✨
+
+Made by [@StorytellerCZ](https://www.github.com/StorytellerCZ).
+
+Thanks goes to these wonderful contributors ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/StorytellerCZ"><img src="https://avatars2.githubusercontent.com/u/1715235?v=4" width="100px;" alt="Jan Dvorak"/><br /><sub><b>Jan Dvorak</b></sub></a><br /><a href="https://github.com/Jan Dvorak/Meteor Legal Management/commits?author=StorytellerCZ" title="Code">💻</a> <a href="https://github.com/Jan Dvorak/Meteor Legal Management/commits?author=StorytellerCZ" title="Documentation">📖</a> <a href="#maintenance-StorytellerCZ" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## API - Agreements
 
