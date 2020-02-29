@@ -1,4 +1,14 @@
 # CHANGELOG
+
+## v1.4.1 - 2020-02-29
+## Fix
+  - When legal document is not found while calling `freedombase:legal.agreements.agreeBy`, it will throw an error instead of failing.
+
+## Updates
+  - Bumped minimum Meteor version to `v1.9`
+  - Updated `aldeed:collection2` to `v3.0.6`
+  - Updated dev dependencies
+
 ## v1.4.0 - 2019-11-20
 ## Updates
   - Bumped minimum Meteor version to `v1.8.1`

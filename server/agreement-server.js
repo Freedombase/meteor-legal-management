@@ -95,8 +95,10 @@ Meteor.methods({
       // Get the legal document
       const doc = LegalCollection.findOne(
         { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }] },
-        { fields: { documentAbbr: 1 } }
+        { fields: { _id: 1, documentAbbr: 1 } }
       )
+      // Throw error when legal document is not found
+      if (!doc) throw new Meteor.Error(`Legal document ${legalDoc} not found.`)
 
       // Prepare a matcher for agreements collection
       const elemMatch = { $elemMatch: { documentId: doc._id, documentAbbr: doc.documentAbbr } }
