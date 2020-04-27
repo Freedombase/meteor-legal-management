@@ -4,6 +4,11 @@
 ### Fix
   - Add missing `aldeed:schema-index` and `aldeed:schema-deny` packages to dependencies
 
+### Updates
+  - Updated dev dependencies
+  - Remove all contributors script from pre-commit hook as it failed to run
+
+
 ## v1.4.1 - 2020-02-29
 ### Fix
   - When legal document is not found while calling `freedombase:legal.agreements.agreeBy`, it will throw an error instead of failing.
