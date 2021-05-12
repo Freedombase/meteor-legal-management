@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v1.4.3 - 2021-05-12
+### Fix
+  - Add additional check for i18n checking so that it doesn't throw errors when a language is missing.
+
+### Updates
+  - Updated `aldeed:collection2` to v3.3.0
+
 ## v1.4.2 - 2020-04-28
 ### Fix
   - Add missing `aldeed:schema-index` and `aldeed:schema-deny` packages to dependencies

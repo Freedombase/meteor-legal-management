@@ -18,7 +18,7 @@ Meteor.publish('freedombase:legal.getLatest', function (documentAbbr, language) 
 
   const handle = LegalCollection.find({ documentAbbr, effectiveAt: { $lte: new Date() } }, options).observeChanges({
     added (id, doc) {
-      if (language && doc.language !== language && doc.i18n) {
+      if (language && doc.language !== language && doc.i18n && doc.i18n[language]) {
         if (doc.i18n[language].title) doc.title = doc.i18n[language].title
         if (doc.i18n[language].text) doc.text = doc.i18n[language].text
         if (doc.i18n[language].changelog) doc.changelog = doc.i18n[language].changelog
@@ -116,7 +116,7 @@ Meteor.publish('freedombase:legal.get', function (documentAbbr, version, languag
     { limit: 1, sort: { effectiveAt: -1 } }
   ).observeChanges({
     added (id, doc) {
-      if (language && doc.language !== language && doc.i18n) {
+      if (language && doc.language !== language && doc.i18n && doc.i18n[language]) {
         if (doc.i18n[language].title) doc.title = doc.i18n[language].title
         if (doc.i18n[language].text) doc.text = doc.i18n[language].text
         if (doc.i18n[language].changelog) doc.changelog = doc.i18n[language].changelog
