@@ -3,6 +3,20 @@ import SimpleSchema from 'simpl-schema'
 
 export const LegalCollection = new Mongo.Collection('freedombase:legal')
 
+export type LegalDocument = {
+  _id: string,
+  documentAbbr: string,
+  version: string,
+  effectiveAt: Date,
+  title: string,
+  text: string | object,
+  changelog?: string | object,
+  language: string,
+  i18n?: object,
+  createdAt: Date,
+  updatedAt?: Date
+}
+
 const schema = new SimpleSchema({
   documentAbbr: {
     type: String,
@@ -20,11 +34,11 @@ const schema = new SimpleSchema({
     type: String
   },
   text: {
-    type: Object,
+    type: SimpleSchema.oneOf(String, Object),
     blackbox: true
   },
   changelog: {
-    type: Object,
+    type: SimpleSchema.oneOf(String, Object),
     optional: true,
     blackbox: true
   },

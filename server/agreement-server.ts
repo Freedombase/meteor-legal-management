@@ -1,14 +1,14 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { LegalAgreementCollection } from '../common/agreement'
-import { LegalCollection } from '../common/legal'
+import { LegalCollection, LegalDocument } from '../common/legal'
 
 /**
  * Gets agreements/consent to legal documents.
  * @param ownerId {String}
  * @returns {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
+Meteor.publish('freedombase:legal.agreements.for', (ownerId:string = 'user') => {
   check(ownerId, String)
 
   if (ownerId === 'user') {
@@ -34,7 +34,7 @@ Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
  * @param ownerId {String}
  * @returns {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
+Meteor.publish('freedombase:legal.agreements.history', (ownerId:string = 'user') => {
   check(ownerId, String)
 
   if (ownerId === 'user') {
@@ -60,7 +60,7 @@ Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
  * @param ownerId {String}
  * @returns {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.agreements.full', (ownerId = 'user') => {
+Meteor.publish('freedombase:legal.agreements.full', (ownerId:string = 'user') => {
   check(ownerId, String)
 
   if (ownerId === 'user') {
@@ -77,7 +77,7 @@ Meteor.methods({
    * @param userId {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
    * @return {Array} Array of results of update functions
    */
-  'freedombase:legal.agreements.agreeBy' (what, userId = null) {
+  'freedombase:legal.agreements.agreeBy' (what:string | string[], userId:string = null) {
     check(what, Match.OneOf(String, [String]))
     check(userId, Match.Maybe(String))
     const ownerId = this.userId || Meteor.userId() || userId
@@ -86,14 +86,16 @@ Meteor.methods({
       throw new Meteor.Error('User needs to be logged in to agree.')
     }
 
-    let legalDocs = what
+    let legalDocs:string[] = []
     if (!Array.isArray(what)) {
       legalDocs = [what]
+    } else {
+      legalDocs = what
     }
 
     return legalDocs.map(legalDoc => {
       // Get the legal document
-      const doc = LegalCollection.findOne(
+      const doc:LegalDocument = LegalCollection.findOne(
         { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }] },
         { fields: { _id: 1, documentAbbr: 1 } }
       )
@@ -149,9 +151,11 @@ Meteor.methods({
       throw new Meteor.Error('User needs to be logged in to revoke agreement.')
     }
 
-    let legalDocs = what
+    let legalDocs:string[] = []
     if (!Array.isArray(what)) {
       legalDocs = [what]
+    } else {
+      legalDocs = what
     }
 
     return legalDocs.map(legalDoc => {

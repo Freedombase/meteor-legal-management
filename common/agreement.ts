@@ -63,14 +63,6 @@ const schema = new SimpleSchema({
   }
 })
 
-/*
-export class LegalAgreement extends BaseModel {
-  hasAgreedById(documentId) {}
-  agreeById(documentId) {}
-  revokeById(documentId) {}
-}
-*/
-// LegalAgreement.attachCollection(LegalAgreementCollection);
 LegalAgreementCollection.attachSchema(schema)
 
 LegalAgreementCollection.allow({
