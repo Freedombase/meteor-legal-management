@@ -14,7 +14,7 @@ Package.onUse(function (api) {
   // 'socialize:base-model@1.1.2'
 
   api.mainModule('common.ts', 'client')
-  api.mainModule('server.js', 'server')
+  api.mainModule('server.ts', 'server')
 })
 
 Package.onTest(function (api) {

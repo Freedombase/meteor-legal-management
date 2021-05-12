@@ -4,6 +4,27 @@ import SimpleSchema from 'simpl-schema'
 
 export const LegalAgreementCollection = new Mongo.Collection('freedombase:legalAgreement')
 
+type Agreements = {
+  documentAbbr?: string,
+  documentId: string,
+  agreed: boolean
+}
+
+type History = {
+  createdAt: Date,
+  agreement: string,
+  action: 'revoked' | 'agreed' | 'revision'
+}
+
+export type LegalAgreement = {
+  _id: string,
+  ownerId: string,
+  agreements: Agreements[],
+  history: History[],
+  createdAt: Date,
+  updtedAt?: Date
+}
+
 const schema = new SimpleSchema({
   ownerId: {
     type: SimpleSchema.RegEx.Id,
