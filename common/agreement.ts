@@ -4,6 +4,27 @@ import SimpleSchema from 'simpl-schema'
 
 export const LegalAgreementCollection = new Mongo.Collection('freedombase:legalAgreement')
 
+type Agreements = {
+  documentAbbr?: string,
+  documentId: string,
+  agreed: boolean
+}
+
+type History = {
+  createdAt: Date,
+  agreement: string,
+  action: 'revoked' | 'agreed' | 'revision'
+}
+
+export type LegalAgreement = {
+  _id: string,
+  ownerId: string,
+  agreements: Agreements[],
+  history: History[],
+  createdAt: Date,
+  updatedAt?: Date
+}
+
 const schema = new SimpleSchema({
   ownerId: {
     type: SimpleSchema.RegEx.Id,
@@ -63,21 +84,13 @@ const schema = new SimpleSchema({
   }
 })
 
-/*
-export class LegalAgreement extends BaseModel {
-  hasAgreedById(documentId) {}
-  agreeById(documentId) {}
-  revokeById(documentId) {}
-}
-*/
-// LegalAgreement.attachCollection(LegalAgreementCollection);
 LegalAgreementCollection.attachSchema(schema)
 
 LegalAgreementCollection.allow({
   insert (userId) {
     return !!userId
   },
-  update (userId, document) {
+  update (userId, document: LegalAgreement) {
     return userId === document.ownerId
   },
   remove () {

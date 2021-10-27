@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v1.5.0 - UNRELEASED
+### Fixes 
+  - Fixed schema where it would only accept object when in documentation it could accept both object and string. 
+
+### Changes
+  - Rewrote code into Typescript
+
+### Updates
+  - Updated dev dependencies to the latest versions
+  - Updated `aldeed:collection2` to v3.5.0
+
 ## v1.4.3 - 2021-05-12
 ### Fix
   - Add additional check for i18n checking so that it doesn't throw errors when a language is missing.

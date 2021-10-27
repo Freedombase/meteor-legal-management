@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
-import { LegalCollection } from '../common/legal'
+import { LegalCollection, LegalDocument } from '../common/legal'
 
 // add unique compound index for documentAbbr + version
 LegalCollection.rawCollection().createIndex({ documentAbbr: 1, version: 1 }, { unique: true })
@@ -17,7 +17,7 @@ Meteor.publish('freedombase:legal.getLatest', function (documentAbbr, language) 
   const options = { limit: 1, sort: { effectiveAt: -1 } }
 
   const handle = LegalCollection.find({ documentAbbr, effectiveAt: { $lte: new Date() } }, options).observeChanges({
-    added (id, doc) {
+    added (id:string, doc: LegalDocument) {
       if (language && doc.language !== language && doc.i18n && doc.i18n[language]) {
         if (doc.i18n[language].title) doc.title = doc.i18n[language].title
         if (doc.i18n[language].text) doc.text = doc.i18n[language].text
@@ -68,13 +68,13 @@ Meteor.publish('freedombase:legal.getLatestTiny', documentAbbr => {
  * @param language {String}
  * @return {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.getAll', function (documentAbbr, language) {
+Meteor.publish('freedombase:legal.getAll', function (documentAbbr: string, language: string) {
   check(documentAbbr, String)
   check(language, Match.Maybe(String))
   const sub = this
 
   const handle = LegalCollection.find({ documentAbbr }, { sort: { effectiveAt: -1 } }).observeChanges({
-    added (id, doc) {
+    added (id:string, doc:LegalDocument) {
       if (language && doc.language !== language && doc.i18n) {
         if (doc.i18n[language].title) doc.title = doc.i18n[language].title
         if (doc.i18n[language].text) doc.text = doc.i18n[language].text
@@ -105,7 +105,7 @@ Meteor.publish('freedombase:legal.getAll', function (documentAbbr, language) {
  * @param language {String}
  * @return {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.get', function (documentAbbr, version, language) {
+Meteor.publish('freedombase:legal.get', function (documentAbbr: string, version: string, language: string) {
   check(documentAbbr, String)
   check(version, String)
   check(language, Match.Maybe(String))
@@ -115,7 +115,7 @@ Meteor.publish('freedombase:legal.get', function (documentAbbr, version, languag
     { documentAbbr, version },
     { limit: 1, sort: { effectiveAt: -1 } }
   ).observeChanges({
-    added (id, doc) {
+    added (id: string, doc: LegalDocument) {
       if (language && doc.language !== language && doc.i18n && doc.i18n[language]) {
         if (doc.i18n[language].title) doc.title = doc.i18n[language].title
         if (doc.i18n[language].text) doc.text = doc.i18n[language].text
@@ -144,7 +144,7 @@ Meteor.publish('freedombase:legal.get', function (documentAbbr, version, languag
  * @param documentAbbr {String}
  * @return {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.getVersions', documentAbbr => {
+Meteor.publish('freedombase:legal.getVersions', (documentAbbr: string) => {
   check(documentAbbr, String)
 
   return LegalCollection.find(
@@ -168,7 +168,15 @@ Meteor.methods({
    * @param from {Date} From what date is the document effective.
    * @return {string} ID of the inserted document.
    */
-  'freedombase:legal.addNewVersion' (documentAbbr, version, language, title, text, changelog, from = new Date()) {
+  'freedombase:legal.addNewVersion' (
+    documentAbbr: string,
+    version: string,
+    language: string,
+    title: string,
+    text: string | object,
+    changelog: string | object,
+    from: Date = new Date()
+  ) {
     check(documentAbbr, String)
     check(version, String)
     check(language, String)
@@ -191,14 +199,14 @@ Meteor.methods({
    * @return {string} ID of the inserted document.
    */
   'freedombase:legal.addNewVersionAll' (
-    documentAbbr,
-    version,
-    language,
-    title,
-    text,
-    changelog,
-    i18n,
-    from = new Date()
+    documentAbbr: string,
+    version: string,
+    language: string,
+    title: string,
+    text: string | object,
+    changelog: string | object,
+    i18n: object,
+    from: Date = new Date()
   ) {
     check(documentAbbr, String)
     check(version, String)
@@ -221,7 +229,14 @@ Meteor.methods({
    * @param language {String} Language code of the translation.
    * @return {number} Number of affected documents. Should be 1, or else the update failed.
    */
-  'freedombase:legal.addTranslation' (documentAbbr, version, title, text, language, changelog) {
+  'freedombase:legal.addTranslation' (
+    documentAbbr: string,
+    version: string,
+    title: string,
+    text: string | object,
+    language: string,
+    changelog: string | object
+  ) {
     check(documentAbbr, String)
     check(version, String)
     check(title, String)
@@ -243,12 +258,12 @@ Meteor.methods({
    * @param changelog {String||Object} New version of the changelog.
    * @return {number}
    */
-  'freedombase:legal.updateChangelog' (id, language, changelog) {
+  'freedombase:legal.updateChangelog' (id: string, language: string, changelog: string | object) {
     check(id, String)
     check(language, String)
     check(changelog, Match.OneOf(String, Object))
 
-    const doc = LegalCollection.findOne({ _id: id }, { fields: { language: 1 } })
+    const doc: LegalDocument = LegalCollection.findOne({ _id: id }, { fields: { language: 1 } })
     if (doc) {
       let set
       if (doc.language === language) {
