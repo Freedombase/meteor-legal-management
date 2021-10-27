@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
+import { Hook } from 'meteor/callback-hook'
 import { LegalAgreementCollection } from '../common/agreement'
 import { LegalCollection, LegalDocument } from '../common/legal'
 
@@ -70,6 +71,11 @@ Meteor.publish('freedombase:legal.agreements.full', (ownerId:string = 'user') =>
   return LegalAgreementCollection.find({ ownerId }, { limit: 1, sort: { userId: -1 } })
 })
 
+export const beforeAgreedHook = new Hook()
+export const afterAgreedHook = new Hook()
+export const beforeRevokedHook = new Hook()
+export const afterRevokedHook = new Hook()
+
 Meteor.methods({
   /**
    * Give agreement to the given document.
@@ -86,6 +92,13 @@ Meteor.methods({
       throw new Meteor.Error('User needs to be logged in to agree.')
     }
 
+    let cont:boolean = true
+    beforeAgreedHook.forEach((hook) => {
+      const result = hook(what, ownerId)
+      if (cont) cont = result // once cont is false it will stay false
+    })
+    if (!cont) return
+
     let legalDocs:string[] = []
     if (!Array.isArray(what)) {
       legalDocs = [what]
@@ -93,7 +106,7 @@ Meteor.methods({
       legalDocs = what
     }
 
-    return legalDocs.map(legalDoc => {
+    const result = legalDocs.map(legalDoc => {
       // Get the legal document
       const doc:LegalDocument = LegalCollection.findOne(
         { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }] },
@@ -137,6 +150,10 @@ Meteor.methods({
         )
       }
     })
+    afterAgreedHook.forEach((hook) => {
+      hook(what, ownerId, result)
+    })
+    return result
   },
   /**
    * Revoke agreement to the given document.
@@ -151,6 +168,10 @@ Meteor.methods({
       throw new Meteor.Error('User needs to be logged in to revoke agreement.')
     }
 
+    beforeRevokedHook.forEach((hook) => {
+      hook(what, ownerId)
+    })
+
     let legalDocs:string[] = []
     if (!Array.isArray(what)) {
       legalDocs = [what]
@@ -158,7 +179,7 @@ Meteor.methods({
       legalDocs = what
     }
 
-    return legalDocs.map(legalDoc => {
+    const result = legalDocs.map(legalDoc => {
       return LegalAgreementCollection.update(
         {
           ownerId,
@@ -172,6 +193,10 @@ Meteor.methods({
         }
       )
     })
+    afterRevokedHook.forEach((hook) => {
+      hook(what, ownerId, result)
+    })
+    return result
   }
   /**
    * Resets agreement for type of legal document when a new version is available.

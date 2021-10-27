@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v1.6.0 - 2021-
+### Changes
+  - Bumped minimum Meteor version to 2.3
+
+### New features
+  - Added hooks to agreements methods
+
 ## v1.5.0 - 2021-10-27
 ### Fixes 
   - Fixed schema where it would only accept object when in documentation it could accept both object and string. 
