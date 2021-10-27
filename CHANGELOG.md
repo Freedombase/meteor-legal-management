@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v1.5.0 - UNRELEASED
+## v1.5.0 - 2021-10-27
 ### Fixes 
   - Fixed schema where it would only accept object when in documentation it could accept both object and string. 
 
