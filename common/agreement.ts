@@ -22,7 +22,7 @@ export type LegalAgreement = {
   agreements: Agreements[],
   history: History[],
   createdAt: Date,
-  updtedAt?: Date
+  updatedAt?: Date
 }
 
 const schema = new SimpleSchema({
@@ -90,7 +90,7 @@ LegalAgreementCollection.allow({
   insert (userId) {
     return !!userId
   },
-  update (userId, document) {
+  update (userId, document: LegalAgreement) {
     return userId === document.ownerId
   },
   remove () {

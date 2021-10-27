@@ -8,7 +8,7 @@ Package.describe({
 })
 
 Package.onUse(function (api) {
-  api.versionsFrom('1.9')
+  api.versionsFrom('2.0')
   api.use(['meteor', 'ecmascript', 'check', 'mongo', 'typescript'])
   api.use(['aldeed:collection2@3.3.0', 'aldeed:schema-index@3.0.0', 'aldeed:schema-deny@3.0.0'])
   // 'socialize:base-model@1.1.2'
