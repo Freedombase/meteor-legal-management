@@ -9,6 +9,7 @@
 
 ### Updates
   - Updated dev dependencies to the latest versions
+  - Updated `aldeed:collection2` to v3.5.0
 
 ## v1.4.3 - 2021-05-12
 ### Fix
