@@ -125,6 +125,13 @@ Update changelog for the given language.
    * @param `changelog` {Object} New version of the changelog.
    * @return {number}
 
+### Authorization hook
+The above methods all share a hook to check if a user is allowed to add a legal document.
+
+#### `canAddLegalHook`
+Import: `import { canAddLegalHook } from 'meteor/freedombase:legal-management`
+You can create a new hook by registering it: `canAddLegalHook.register((documentAbbr, language, userId) => {/* Your authorization logic, return true to allow or false to stop. */})`
+
 ### Publications
 
 #### `freedombase:legal.getLatest`
@@ -165,6 +172,33 @@ Give agreement to the given document by the currently logged in user.
 Revoke agreement to the given document by the currently logged in user.
    * @param `what` {String|Array} Ids or abbreviations of the legal document
    * @returns {Array} Array of results of update functions
+
+### Hooks
+Both of the above methods have hook on before and after action. They are:
+
+#### `beforeAgreedHook`
+Import: `import { beforeAgreedHook } from 'meteor/freedombase:legal-management`
+Part of the `freedombase:legal.agreements.agreeBy` method and triggers before any DB action takes place. If false is returned, then the DB action will not execute, so you need to return `true` if you want the execution of the method to continue.
+You can create a new hook by registering it: `beforeAgreedHook.register((whichAgreement, userId) => {})`
+This hook will receive in the first argument which agreement is the subject of the call and in second the user id.
+
+#### `afterAgreedHook`
+Import: `import { afterAgreedHook } from 'meteor/freedombase:legal-management`
+Part of the `freedombase:legal.agreements.agreeBy` method and triggers after DB actions take place.
+You can create a new hook by registering it: `afterAgreedHook.register((afterAgreedHook, userId, dbResults) => {})`
+This hook will receive in the first argument which agreement is the subject of the call and in second the user id, the final one will be the result of the DB action.
+
+#### `beforeRevokedHook`
+Import: `import { beforeRevokedHook } from 'meteor/freedombase:legal-management`
+Part of the `freedombase:legal.agreements.revokeBy` method and triggers before any DB action takes place.
+You can create a new hook by registering it: `beforeRevokedHook.register((afterAgreedHook, userId) => {})`
+This hook will receive in the first argument which agreement is the subject of the call and in second the user id.
+
+#### `afterRevokedHook`
+Import: `import { afterRevokedHook } from 'meteor/freedombase:legal-management`
+Part of the `freedombase:legal.agreements.revokeBy` method and triggers after DB actions take place.
+You can create a new hook by registering it: `afterRevokedHook.register((afterAgreedHook, userId, dbResults) => {})`
+This hook will receive in the first argument which agreement is the subject of the call and in second the user id, the final one will be the result of the DB action.
 
 ### Publications
 

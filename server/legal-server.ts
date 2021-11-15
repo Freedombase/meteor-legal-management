@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { LegalCollection, LegalDocument } from '../common/legal'
+import { Hook } from 'meteor/callback-hook'
 
 // add unique compound index for documentAbbr + version
 LegalCollection.rawCollection().createIndex({ documentAbbr: 1, version: 1 }, { unique: true })
@@ -156,6 +157,11 @@ Meteor.publish('freedombase:legal.getVersions', (documentAbbr: string) => {
   )
 })
 
+/**
+ * Authorization hook
+ */
+export const canAddLegalHook = new Hook()
+
 Meteor.methods({
   /**
    * Create a new version of the defined document.
@@ -184,6 +190,12 @@ Meteor.methods({
     check(text, Match.OneOf(String, Object))
     check(changelog, Match.Maybe(Match.OneOf(String, Object)))
     check(from, Date)
+    let canAdd:boolean = true
+    canAddLegalHook.forEach((hook) => {
+      const result:boolean = hook(documentAbbr, language, this.userId)
+      if (result === false) canAdd = result // once cont is false it will stay false
+    })
+    if (!canAdd) return null
     return LegalCollection.insert({ documentAbbr, version, title, text, changelog, language, effectiveAt: from })
   },
   /**
@@ -216,7 +228,12 @@ Meteor.methods({
     check(changelog, Match.OneOf(String, Object))
     check(from, Date)
     check(i18n, Object)
-
+    let canAdd:boolean = true
+    canAddLegalHook.forEach((hook) => {
+      const result:boolean = hook(documentAbbr, language, this.userId)
+      if (result === false) canAdd = result // once cont is false it will stay false
+    })
+    if (!canAdd) return null
     return LegalCollection.insert({ documentAbbr, version, text, changelog, i18n, effectiveAt: from })
   },
   /**
@@ -248,7 +265,12 @@ Meteor.methods({
     i18n[language].title = title
     i18n[language].text = text
     i18n[language].changelog = changelog
-
+    let canAdd:boolean = true
+    canAddLegalHook.forEach((hook) => {
+      const result:boolean = hook(documentAbbr, language, this.userId)
+      if (result === false) canAdd = result // once cont is false it will stay false
+    })
+    if (!canAdd) return null
     return LegalCollection.update({ documentAbbr, version }, { $set: { i18n } })
   },
   /**
@@ -262,9 +284,14 @@ Meteor.methods({
     check(id, String)
     check(language, String)
     check(changelog, Match.OneOf(String, Object))
-
-    const doc: LegalDocument = LegalCollection.findOne({ _id: id }, { fields: { language: 1 } })
+    const doc: LegalDocument = LegalCollection.findOne({ _id: id }, { fields: { language: 1, documentAbbr: 1 } })
     if (doc) {
+      let canAdd:boolean = true
+      canAddLegalHook.forEach((hook) => {
+        const result:boolean = hook(doc.documentAbbr, language, this.userId)
+        if (result === false) canAdd = result // once cont is false it will stay false
+      })
+      if (!canAdd) return null
       let set
       if (doc.language === language) {
         set = { changelog }
