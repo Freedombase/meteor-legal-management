@@ -125,6 +125,13 @@ Update changelog for the given language.
    * @param `changelog` {Object} New version of the changelog.
    * @return {number}
 
+### Authorization hook
+The above methods all share a hook to check if a user is allowed to add a legal document.
+
+#### `canAddLegalHook`
+Import: `import { canAddLegalHook } from 'meteor/freedombase:legal-management`
+You can create a new hook by registering it: `canAddLegalHook.register((documentAbbr, language, userId) => {/* Your authorization logic, return true to allow or false to stop. */})`
+
 ### Publications
 
 #### `freedombase:legal.getLatest`

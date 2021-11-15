@@ -3,19 +3,36 @@ import SimpleSchema from 'simpl-schema'
 
 export const LegalCollection = new Mongo.Collection('freedombase:legal')
 
+export type LegalRichText = {
+  content?: object,
+  html?: string
+}
+
 export type LegalDocument = {
   _id: string,
   documentAbbr: string,
   version: string,
   effectiveAt: Date,
   title: string,
-  text: string | object,
-  changelog?: string | object,
+  text: string | LegalRichText,
+  changelog?: string | LegalRichText,
   language: string,
   i18n?: object,
   createdAt: Date,
   updatedAt?: Date
 }
+
+const RichTextSchema = new SimpleSchema({
+  content: {
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
+  html: {
+    type: String,
+    optional: true
+  }
+})
 
 const schema = new SimpleSchema({
   documentAbbr: {
@@ -34,11 +51,11 @@ const schema = new SimpleSchema({
     type: String
   },
   text: {
-    type: SimpleSchema.oneOf(String, Object),
+    type: SimpleSchema.oneOf(String, RichTextSchema),
     blackbox: true
   },
   changelog: {
-    type: SimpleSchema.oneOf(String, Object),
+    type: SimpleSchema.oneOf(String, RichTextSchema),
     optional: true,
     blackbox: true
   },
