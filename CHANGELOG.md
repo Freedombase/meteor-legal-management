@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.6.1 - 2021-12-10
+### Fixes
+  - Fix bug where hooks were not exposed
+
 ## v1.6.0 - 2021-11-15
 ### Fixes
   - Fix schema for agreements

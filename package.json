@@ -1,6 +1,6 @@
 {
   "name": "meteor-legal-management",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "description": "Management of legal documents like Terms of Service and user consent made easy.",
   "main": "package.js",
