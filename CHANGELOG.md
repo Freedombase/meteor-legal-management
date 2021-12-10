@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.7.0 - 2021-12-11
+### New feature
+  - New publication `freedombase:legal.getDocument`
+
 ## v1.6.1 - 2021-12-10
 ### Fixes
   - Fix bug where hooks were not exposed

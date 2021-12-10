@@ -158,6 +158,11 @@ Gets version list for the given document abbreviation.
  * @param `documentAbbr` {String}
  * @return {Mongo.Cursor}
 
+#### `freedombase:legal.getDocument`
+Gets a document by its id.
+* @param `documentId` {String}
+* @return {Mongo.Cursor}
+
 ## API - Consent
 
 ### Methods

@@ -158,6 +158,17 @@ Meteor.publish('freedombase:legal.getVersions', (documentAbbr: string) => {
 })
 
 /**
+ * Gets document by id
+ * @param documentId {String}
+ * @return {Mongo.Cursor}
+ */
+Meteor.publish('freedombase:legal.getDocument', (documentId: string) => {
+  check(documentId, String)
+
+  return LegalCollection.find(documentId, { limit: 1 })
+})
+
+/**
  * Authorization hook
  */
 export const canAddLegalHook = new Hook()
