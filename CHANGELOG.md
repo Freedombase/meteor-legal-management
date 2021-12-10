@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.8.2 - 2023-12-30
+
+- Update `zodern:types` to v1.0.11
+- Added Meteor `3.0-beta.0` as a supported target to make it easy to perform the initial upgrade, functionality wise it is not yet supported.
+
 ## v1.8.1 - 2023-05-24
 
 - Make `createdAt` optional in type for proper insert type
