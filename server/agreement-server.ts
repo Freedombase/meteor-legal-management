@@ -109,8 +109,8 @@ Meteor.methods({
     const result = legalDocs.map(legalDoc => {
       // Get the legal document
       const doc:LegalDocument = LegalCollection.findOne(
-        { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }] },
-        { fields: { _id: 1, documentAbbr: 1 } }
+        { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }], effectiveAt: { $lte: new Date() } },
+        { fields: { _id: 1, documentAbbr: 1 }, sort: { effectiveAt: -1 } }
       )
       // Throw error when legal document is not found
       if (!doc) throw new Meteor.Error(`Legal document ${legalDoc} not found.`)

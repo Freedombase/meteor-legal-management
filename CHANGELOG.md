@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v1.7.1 - 2022-01-13
+
+### Changes
+
+- Updated `@types/meteor` to v2.0.2
+
+### Fixes
+
+- Ensure that when calling `freedombase:legal.agreements.agreeBy` that user agrees to the current legal document
+
 ## v1.7.0 - 2021-12-11
 
 ### Fixes
