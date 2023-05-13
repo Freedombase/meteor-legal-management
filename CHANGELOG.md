@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.8.0 - 2023-05-13
+
+- Added `zodern:types`
+- Exported types into `legal.d.ts`
+- Updated dev dependencies
+
 ## v1.7.1 - 2022-01-13
 
 ### Changes

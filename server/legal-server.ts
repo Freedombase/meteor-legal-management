@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
-import { LegalCollection, LegalDocument } from '../common/legal'
+import { LegalCollection } from '../common/legal'
 import { Hook } from 'meteor/callback-hook'
+import type { LegalDocument } from '../legal'
 
 // add unique compound index for documentAbbr + version
 LegalCollection.rawCollection().createIndex(

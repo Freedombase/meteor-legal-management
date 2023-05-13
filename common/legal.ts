@@ -1,26 +1,8 @@
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
+import type { LegalDocument } from '../legal'
 
-export const LegalCollection = new Mongo.Collection('freedombase:legal')
-
-export type LegalRichText = {
-  content?: object,
-  html?: string
-}
-
-export type LegalDocument = {
-  _id: string,
-  documentAbbr: string,
-  version: string,
-  effectiveAt: Date,
-  title: string,
-  text: string | LegalRichText,
-  changelog?: string | LegalRichText,
-  language: string,
-  i18n?: object,
-  createdAt: Date,
-  updatedAt?: Date
-}
+export const LegalCollection = new Mongo.Collection<LegalDocument>('freedombase:legal')
 
 const RichTextSchema = new SimpleSchema({
   content: {

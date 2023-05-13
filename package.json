@@ -1,6 +1,6 @@
 {
   "name": "meteor-legal-management",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "private": true,
   "description": "Management of legal documents like Terms of Service and user consent made easy.",
   "main": "package.js",
@@ -27,11 +27,11 @@
     "parser": "babel-eslint"
   },
   "devDependencies": {
-    "@types/meteor": "^2.0.2",
-    "@types/simpl-schema": "^1.12.0",
-    "all-contributors-cli": "^6.20.0",
+    "@types/meteor": "^2.9.2",
+    "@types/simpl-schema": "^1.12.3",
+    "all-contributors-cli": "^6.25.1",
     "babel-eslint": "^10.1.0",
-    "husky": "^7.0.4",
-    "standard": "^16.0.4"
+    "husky": "^8.0.3",
+    "standard": "^17.0.0"
   }
 }

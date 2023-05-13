@@ -2,7 +2,8 @@ import { Meteor } from 'meteor/meteor'
 import { check, Match } from 'meteor/check'
 import { Hook } from 'meteor/callback-hook'
 import { LegalAgreementCollection } from '../common/agreement'
-import { LegalCollection, LegalDocument } from '../common/legal'
+import { LegalCollection } from '../common/legal'
+import type { LegalDocument } from '../legal'
 
 /**
  * Gets agreements/consent to legal documents.

@@ -1,29 +1,9 @@
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
+import { LegalAgreement } from '../legal'
 // import { BaseModel } from 'meteor/socialize:base-model';
 
-export const LegalAgreementCollection = new Mongo.Collection('freedombase:legalAgreement')
-
-type Agreements = {
-  documentAbbr?: string,
-  documentId: string,
-  agreed: boolean
-}
-
-type History = {
-  createdAt: Date,
-  agreement: string,
-  action: 'revoked' | 'agreed' | 'revision'
-}
-
-export type LegalAgreement = {
-  _id: string,
-  ownerId: string,
-  agreements: Agreements[],
-  history: History[],
-  createdAt: Date,
-  updatedAt?: Date
-}
+export const LegalAgreementCollection = new Mongo.Collection<LegalAgreement>('freedombase:legalAgreement')
 
 const schema = new SimpleSchema({
   ownerId: {
