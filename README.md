@@ -190,19 +190,19 @@ This hook will receive in the first argument which agreement is the subject of t
 #### `afterAgreedHook`
 Import: `import { afterAgreedHook } from 'meteor/freedombase:legal-management`
 Part of the `freedombase:legal.agreements.agreeBy` method and triggers after DB actions take place.
-You can create a new hook by registering it: `afterAgreedHook.register((afterAgreedHook, userId, dbResults) => {})`
+You can create a new hook by registering it: `afterAgreedHook.register((whichAgreement, userId, dbResults) => {})`
 This hook will receive in the first argument which agreement is the subject of the call and in second the user id, the final one will be the result of the DB action.
 
 #### `beforeRevokedHook`
 Import: `import { beforeRevokedHook } from 'meteor/freedombase:legal-management`
 Part of the `freedombase:legal.agreements.revokeBy` method and triggers before any DB action takes place.
-You can create a new hook by registering it: `beforeRevokedHook.register((afterAgreedHook, userId) => {})`
+You can create a new hook by registering it: `beforeRevokedHook.register((whichAgreement, userId) => {})`
 This hook will receive in the first argument which agreement is the subject of the call and in second the user id.
 
 #### `afterRevokedHook`
 Import: `import { afterRevokedHook } from 'meteor/freedombase:legal-management`
 Part of the `freedombase:legal.agreements.revokeBy` method and triggers after DB actions take place.
-You can create a new hook by registering it: `afterRevokedHook.register((afterAgreedHook, userId, dbResults) => {})`
+You can create a new hook by registering it: `afterRevokedHook.register((whichAgreement, userId, dbResults) => {})`
 This hook will receive in the first argument which agreement is the subject of the call and in second the user id, the final one will be the result of the DB action.
 
 ### Publications

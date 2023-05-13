@@ -1,4 +1,6 @@
-export declare type LegalRichText = {
+import { Mongo } from 'meteor/mongo'
+
+type LegalRichText = {
   content?: object,
   html?: string
 }
@@ -17,13 +19,13 @@ export declare type LegalDocument = {
   updatedAt?: Date
 }
 
-export declare type Agreements = {
+declare type Agreements = {
   documentAbbr?: string,
   documentId: string,
   agreed: boolean
 }
 
-export declare type History = {
+declare type History = {
   createdAt: Date,
   agreement: string,
   action: 'revoked' | 'agreed' | 'revision'
@@ -37,3 +39,36 @@ export declare type LegalAgreement = {
   createdAt: Date,
   updatedAt?: Date
 }
+
+export var LegalCollection: Mongo.Collection<LegalDocument>
+export var LegalAgreementCollection: Mongo.Collection<LegalAgreement>
+
+interface CanAddLegalHook {
+  register: (documentAbbr: string, language: string, userId: string) => boolean
+}
+
+export var canAddLegalHook: CanAddLegalHook
+
+interface BeforeAgreedHook {
+  register: (whichAgreement: string, userId: string) => boolean
+}
+
+export var beforeAgreedHook: BeforeAgreedHook
+
+interface AfterAgreedHook {
+  register: (whichAgreement: string, userId: string, dbResults: number | string) => void
+}
+
+export var afterAgreedHook: AfterAgreedHook
+
+interface BeforeRevokedHook {
+  register: (whichAgreement: string, userId: string) => void
+}
+
+export var beforeRevokedHook: BeforeRevokedHook
+
+interface AfterRevokedHook {
+  register: (whichAgreement: string, userId: string, dbResults: number | string) => void
+}
+
+export var afterRevokedHook: AfterRevokedHook
