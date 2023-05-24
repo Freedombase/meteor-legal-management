@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.8.1 - 2023-05-24
+
+- Make `createdAt` optional in type for proper insert type
+
 ## v1.8.0 - 2023-05-13
 
 - Added `zodern:types`

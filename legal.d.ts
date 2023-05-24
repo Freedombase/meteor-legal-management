@@ -15,7 +15,7 @@ export declare type LegalDocument = {
   changelog?: string | LegalRichText,
   language: string,
   i18n?: object,
-  createdAt: Date,
+  createdAt?: Date,
   updatedAt?: Date
 }
 
@@ -36,7 +36,7 @@ export declare type LegalAgreement = {
   ownerId: string,
   agreements: Agreements[],
   history: History[],
-  createdAt: Date,
+  createdAt?: Date,
   updatedAt?: Date
 }
 
