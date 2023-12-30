@@ -7,8 +7,7 @@ export const LegalAgreementCollection = new Mongo.Collection<LegalAgreement>('fr
 
 const schema = new SimpleSchema({
   ownerId: {
-    type: SimpleSchema.RegEx.Id,
-    index: true
+    type: SimpleSchema.RegEx.Id
   },
   agreements: {
     type: Array,

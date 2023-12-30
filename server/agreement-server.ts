@@ -4,6 +4,9 @@ import { Hook } from 'meteor/callback-hook'
 import { LegalAgreementCollection } from '../common/agreement'
 import { LegalCollection } from '../common/legal'
 
+// Indexes
+LegalAgreementCollection.createIndexAsync({ ownerId: 1 })
+
 /**
  * Gets agreements/consent to legal documents.
  * @param ownerId {String}
@@ -142,7 +145,7 @@ Meteor.methods({
       } else {
         // Create new agreement for user
         const res = await LegalAgreementCollection.upsertAsync(
-          {ownerId},
+          { ownerId },
           {
             $addToSet: {
               agreements: {documentAbbr: doc.documentAbbr, documentId: doc._id, agreed: true},

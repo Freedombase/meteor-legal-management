@@ -18,16 +18,13 @@ const RichTextSchema = new SimpleSchema({
 
 const schema = new SimpleSchema({
   documentAbbr: {
-    type: String,
-    index: true
+    type: String
   },
   version: {
-    type: String,
-    index: true
+    type: String
   },
   effectiveAt: {
-    type: Date,
-    index: true
+    type: Date
   },
   title: {
     type: String

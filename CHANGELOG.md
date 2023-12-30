@@ -4,6 +4,7 @@
 
 - Minimum Meteor version is now `2.8.1`
 - All collection calls have been migrated to async
+- Removed `aldeed:schema-index` as its functionality has been replaced by Meteor default `createIndexAsync` method.
 
 ## v1.8.2 - 2023-12-30
 

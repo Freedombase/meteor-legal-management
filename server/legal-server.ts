@@ -4,11 +4,16 @@ import { LegalCollection } from '../common/legal'
 import { Hook } from 'meteor/callback-hook'
 import type { LegalDocument } from '../legal'
 
-// add unique compound index for documentAbbr + version
+// Add unique compound index for documentAbbr + version
 LegalCollection.createIndexAsync(
   { documentAbbr: 1, version: 1 },
   { unique: true }
 )
+
+// Other indexes
+LegalCollection.createIndexAsync({ documentAbbr: 1, effectiveAt: -1 })
+LegalCollection.createIndexAsync({ documentId: 1 })
+
 /**
  * Gets the latest version of the given document in the given language.
  * @param documentAbbr {String}
