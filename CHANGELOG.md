@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.9.0 - 2023-12-30
+
+- Minimum Meteor version is now `2.8.1`
+- All collection calls have been migrated to async
+
 ## v1.8.2 - 2023-12-30
 
 - Update `zodern:types` to v1.0.11

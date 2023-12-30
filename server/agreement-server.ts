@@ -3,7 +3,6 @@ import { check, Match } from 'meteor/check'
 import { Hook } from 'meteor/callback-hook'
 import { LegalAgreementCollection } from '../common/agreement'
 import { LegalCollection } from '../common/legal'
-import type { LegalDocument } from '../legal'
 
 /**
  * Gets agreements/consent to legal documents.
@@ -84,7 +83,7 @@ Meteor.methods({
    * @param userId {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
    * @return {Array} Array of results of update functions
    */
-  'freedombase:legal.agreements.agreeBy' (what:string | string[], userId:string = null) {
+  'freedombase:legal.agreements.agreeBy': async function (what:string | string[], userId:string = null) {
     check(what, Match.OneOf(String, [String]))
     check(userId, Match.Maybe(String))
     const ownerId = this.userId || Meteor.userId() || userId
@@ -107,9 +106,10 @@ Meteor.methods({
       legalDocs = what
     }
 
-    const result = legalDocs.map(legalDoc => {
+    const result = []
+    for (const legalDoc of legalDocs) {
       // Get the legal document
-      const doc:LegalDocument = LegalCollection.findOne(
+      const doc = await LegalCollection.findOneAsync(
         { $or: [{ _id: legalDoc }, { documentAbbr: legalDoc }], effectiveAt: { $lte: new Date() } },
         { fields: { _id: 1, documentAbbr: 1 }, sort: { effectiveAt: -1 } }
       )
@@ -120,13 +120,13 @@ Meteor.methods({
       const elemMatch = { $elemMatch: { documentId: doc._id, documentAbbr: doc.documentAbbr } }
 
       // Check if we have existing agreements
-      const agr = LegalAgreementCollection.findOne(
+      const agr = await LegalAgreementCollection.findOneAsync(
         { ownerId, agreements: elemMatch },
         { fields: { agreements: 1 } }
       )
       if (agr) {
-        return LegalAgreementCollection.update(
-          { ownerId, agreements: elemMatch },
+        const res = await LegalAgreementCollection.updateAsync(
+          {ownerId, agreements: elemMatch},
           {
             $set: {
               'agreements.$.documentAbbr': doc.documentAbbr,
@@ -134,23 +134,25 @@ Meteor.methods({
               'agreements.$.agreed': true
             },
             $addToSet: {
-              history: { createdAt: new Date(), agreement: legalDoc, action: 'agreed' }
+              history: {createdAt: new Date(), agreement: legalDoc, action: 'agreed'}
             }
           }
         )
+        result.push(res)
       } else {
         // Create new agreement for user
-        return LegalAgreementCollection.upsert(
-          { ownerId },
+        const res = await LegalAgreementCollection.upsertAsync(
+          {ownerId},
           {
             $addToSet: {
-              agreements: { documentAbbr: doc.documentAbbr, documentId: doc._id, agreed: true },
-              history: { createdAt: new Date(), agreement: legalDoc, action: 'agreed' }
+              agreements: {documentAbbr: doc.documentAbbr, documentId: doc._id, agreed: true},
+              history: {createdAt: new Date(), agreement: legalDoc, action: 'agreed'}
             }
           }
-        )
+        );
+        result.push(res)
       }
-    })
+    }
     afterAgreedHook.forEach((hook) => {
       hook(what, ownerId, result)
     })
@@ -161,7 +163,7 @@ Meteor.methods({
    * @param what {String|Array} Ids or abbreviations of the legal document
    * @returns {Array} Array of results of update functions
    */
-  'freedombase:legal.agreements.revokeBy' (what) {
+  'freedombase:legal.agreements.revokeBy': async function (what) {
     check(what, Match.OneOf(String, [String]))
     const ownerId = this.userId || Meteor.userId()
 
@@ -180,20 +182,22 @@ Meteor.methods({
       legalDocs = what
     }
 
-    const result = legalDocs.map(legalDoc => {
-      return LegalAgreementCollection.update(
+    const result = []
+    for (const legalDoc of legalDocs) {
+      const res = await LegalAgreementCollection.updateAsync(
         {
           ownerId,
-          agreements: { $elemMatch: { $or: [{ documentId: legalDoc }, { documentAbbr: legalDoc }] } }
+          agreements: {$elemMatch: {$or: [{documentId: legalDoc}, {documentAbbr: legalDoc}]}}
         },
         {
-          $set: { 'agreements.$.agreed': false },
+          $set: {'agreements.$.agreed': false},
           $addToSet: {
-            history: { createdAt: new Date(), agreement: legalDoc, action: 'revoked' }
+            history: {createdAt: new Date(), agreement: legalDoc, action: 'revoked'}
           }
         }
       )
-    })
+      result.push(res)
+    }
     afterRevokedHook.forEach((hook) => {
       hook(what, ownerId, result)
     })

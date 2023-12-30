@@ -5,7 +5,7 @@ import { Hook } from 'meteor/callback-hook'
 import type { LegalDocument } from '../legal'
 
 // add unique compound index for documentAbbr + version
-LegalCollection.rawCollection().createIndex(
+LegalCollection.createIndexAsync(
   { documentAbbr: 1, version: 1 },
   { unique: true }
 )
@@ -217,7 +217,7 @@ Meteor.methods({
    * @param from {Date} From what date is the document effective.
    * @return {string} ID of the inserted document.
    */
-  'freedombase:legal.addNewVersion'(
+  'freedombase:legal.addNewVersion': async function (
     documentAbbr: string,
     version: string,
     language: string,
@@ -239,7 +239,7 @@ Meteor.methods({
       if (result === false) canAdd = result // once cont is false it will stay false
     })
     if (!canAdd) return null
-    return LegalCollection.insert({
+    return LegalCollection.insertAsync({
       documentAbbr,
       version,
       title,
@@ -261,7 +261,7 @@ Meteor.methods({
    * @param from {Date} From what date is the document effective.
    * @return {string} ID of the inserted document.
    */
-  'freedombase:legal.addNewVersionAll'(
+  'freedombase:legal.addNewVersionAll': async function (
     documentAbbr: string,
     version: string,
     language: string,
@@ -285,7 +285,7 @@ Meteor.methods({
       if (result === false) canAdd = result // once cont is false it will stay false
     })
     if (!canAdd) return null
-    return LegalCollection.insert({
+    return LegalCollection.insertAsync({
       documentAbbr,
       version,
       text,
@@ -304,7 +304,7 @@ Meteor.methods({
    * @param language {String} Language code of the translation.
    * @return {number} Number of affected documents. Should be 1, or else the update failed.
    */
-  'freedombase:legal.addTranslation'(
+  'freedombase:legal.addTranslation': async function (
     documentAbbr: string,
     version: string,
     title: string,
@@ -329,7 +329,7 @@ Meteor.methods({
       if (result === false) canAdd = result // once cont is false it will stay false
     })
     if (!canAdd) return null
-    return LegalCollection.update({ documentAbbr, version }, { $set: { i18n } })
+    return LegalCollection.updateAsync({ documentAbbr, version }, { $set: { i18n } })
   },
   /**
    * Update changelog for the given language.
@@ -338,7 +338,7 @@ Meteor.methods({
    * @param changelog {String||Object} New version of the changelog.
    * @return {number}
    */
-  'freedombase:legal.updateChangelog'(
+  'freedombase:legal.updateChangelog': async function (
     id: string,
     language: string,
     changelog: string | object
@@ -364,7 +364,7 @@ Meteor.methods({
         const i18n = {}
         i18n[language].changelog = changelog
       }
-      return LegalCollection.update({ _id: id }, { $set: set })
+      return LegalCollection.updateAsync({ _id: id }, { $set: set })
     }
     return 0
   }
