@@ -1,6 +1,6 @@
 {
   "name": "meteor-legal-management",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Management of legal documents like Terms of Service and user consent made easy.",
   "main": "package.js",
@@ -16,7 +16,7 @@
   "scripts": {
     "test": "npm run lint && meteor test-packages ./",
     "lint": "./node_modules/.bin/standard --fix",
-    "publish": "npm prune --production && meteor publish && meteor npm i",
+    "publish": "npm prune --production && meteor publish && npm i",
     "all-contributors": "./node_modules/.bin/all-contributors",
     "all-contributors-generate": "./node_modules/.bin/all-contributors generate",
     "prepare": "husky install"
@@ -27,11 +27,9 @@
     "parser": "babel-eslint"
   },
   "devDependencies": {
-    "@types/meteor": "^2.9.2",
-    "@types/simpl-schema": "^1.12.3",
-    "all-contributors-cli": "^6.25.1",
+    "all-contributors-cli": "^6.26.1",
     "babel-eslint": "^10.1.0",
-    "husky": "^8.0.3",
-    "standard": "^17.0.0"
+    "husky": "^9.0.11",
+    "standard": "^17.1.0"
   }
 }

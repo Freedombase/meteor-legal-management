@@ -1,7 +1,10 @@
 import { Mongo } from 'meteor/mongo'
-import SimpleSchema from 'simpl-schema'
+import SimpleSchema from 'meteor/aldeed:simple-schema'
 import { LegalAgreement } from '../legal'
 // import { BaseModel } from 'meteor/socialize:base-model';
+import 'meteor/aldeed:collection2/dynamic'
+
+Collection2.load()
 
 export const LegalAgreementCollection = new Mongo.Collection<LegalAgreement>('freedombase:legalAgreement')
 
