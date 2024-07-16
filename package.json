@@ -20,7 +20,6 @@
     "publish": "npm prune --production && meteor publish && npm i",
     "all-contributors": "./node_modules/.bin/all-contributors",
     "all-contributors-generate": "./node_modules/.bin/all-contributors generate",
-    "prepare": "husky install"
   },
   "author": "Jan Dvorak",
   "license": "MIT",
