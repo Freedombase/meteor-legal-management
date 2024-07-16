@@ -19,7 +19,7 @@
     "lint-fix": "./node_modules/.bin/biome format --write --reporter=summary",
     "publish": "npm prune --production && meteor publish && npm i",
     "all-contributors": "./node_modules/.bin/all-contributors",
-    "all-contributors-generate": "./node_modules/.bin/all-contributors generate",
+    "all-contributors-generate": "./node_modules/.bin/all-contributors generate"
   },
   "author": "Jan Dvorak",
   "license": "MIT",
