@@ -1,53 +1,55 @@
-import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'meteor/aldeed:simple-schema'
+import { Mongo } from 'meteor/mongo'
 import type { LegalDocument } from '../legal'
 import 'meteor/aldeed:collection2/dynamic'
 
 Collection2.load()
 
-export const LegalCollection = new Mongo.Collection<LegalDocument>('freedombase:legal')
+export const LegalCollection = new Mongo.Collection<LegalDocument>(
+  'freedombase:legal',
+)
 
 const RichTextSchema = new SimpleSchema({
   content: {
     type: Object,
     blackbox: true,
-    optional: true
+    optional: true,
   },
   html: {
     type: String,
-    optional: true
-  }
+    optional: true,
+  },
 })
 
 const schema = new SimpleSchema({
   documentAbbr: {
-    type: String
+    type: String,
   },
   version: {
-    type: String
+    type: String,
   },
   effectiveAt: {
-    type: Date
+    type: Date,
   },
   title: {
-    type: String
+    type: String,
   },
   text: {
     type: SimpleSchema.oneOf(String, RichTextSchema),
-    blackbox: true
+    blackbox: true,
   },
   changelog: {
     type: SimpleSchema.oneOf(String, RichTextSchema),
     optional: true,
-    blackbox: true
+    blackbox: true,
   },
   language: {
-    type: String
+    type: String,
   },
   i18n: {
     type: Object,
     blackbox: true,
-    optional: true
+    optional: true,
   },
   /*
   'i18n.$.$': {
@@ -69,30 +71,30 @@ const schema = new SimpleSchema({
   createdAt: {
     type: Date,
     optional: true,
-    autoValue () {
+    autoValue() {
       if (this.isInsert || !this.isFromTrustedCode) return new Date()
     },
-    denyUpdate: true
+    denyUpdate: true,
   },
   updatedAt: {
     type: Date,
     optional: true,
-    autoValue () {
+    autoValue() {
       if (this.isUpdate) return new Date()
-    }
-  }
+    },
+  },
 })
 
 LegalCollection.attachSchema(schema)
 // allow/deny
 LegalCollection.allow({
-  insert () {
+  insert() {
     return false
   },
-  update () {
+  update() {
     return false
   },
-  remove () {
+  remove() {
     return false
-  }
+  },
 })

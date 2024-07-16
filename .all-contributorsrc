@@ -3,9 +3,7 @@
   "projectOwner": "Jan Dvorak",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "files": [
-    "README.md"
-  ],
+  "files": ["README.md"],
   "imageSize": 100,
   "commit": true,
   "commitConvention": "eslint",
@@ -15,11 +13,7 @@
       "name": "Jan Dvorak",
       "avatar_url": "https://avatars2.githubusercontent.com/u/1715235?v=4",
       "profile": "https://github.com/StorytellerCZ",
-      "contributions": [
-        "code",
-        "doc",
-        "maintenance"
-      ]
+      "contributions": ["code", "doc", "maintenance"]
     }
   ],
   "contributorsPerLine": 7

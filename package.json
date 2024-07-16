@@ -15,7 +15,8 @@
   "readme": "README.md",
   "scripts": {
     "test": "npm run lint && meteor test-packages ./",
-    "lint": "./node_modules/.bin/standard --fix",
+    "lint": "./node_modules/.bin/biome check --reporter=summary",
+    "lint-fix": "./node_modules/.bin/biome format --write --reporter=summary",
     "publish": "npm prune --production && meteor publish && npm i",
     "all-contributors": "./node_modules/.bin/all-contributors",
     "all-contributors-generate": "./node_modules/.bin/all-contributors generate",
@@ -23,13 +24,8 @@
   },
   "author": "Jan Dvorak",
   "license": "MIT",
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "devDependencies": {
-    "all-contributors-cli": "^6.26.1",
-    "babel-eslint": "^10.1.0",
-    "husky": "^9.0.11",
-    "standard": "^17.1.0"
+    "@biomejs/biome": "1.8.3",
+    "all-contributors-cli": "^6.26.1"
   }
 }

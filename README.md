@@ -35,11 +35,11 @@ If you have an existing app you will want to do a database migration for your ex
 import { Meteor } from 'meteor/meteor';
 import { LegalAgreementCollection } from 'meteor/freedombase:legal-management';
 
-const users = Meteor.users.find({}, { fields: { _id: 1 } }).fetch();
+const users = await Meteor.users.find({}, { fields: { _id: 1 } }).fetchAsync();
 
-users.forEach(user => {
-  LegalAgreementCollection.insert({ ownerId: user._id, agreements: [], history: [] });
-});
+for (const user of users) {
+  LegalAgreementCollection.insertAsync({ ownerId: user._id, agreements: [], history: [] });
+}
 ```
 If the users have already agreed to legal documents fill `agreements` array with the appropriate values.
 

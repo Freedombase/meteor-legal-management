@@ -1,13 +1,14 @@
 # CHANGELOG
 
-## v2.0.0 - 2024-05-XX
+## v2.0.0 - 2024-07-16
 
-- Minimum Meteor version is now `2.8.1`, compatible with `v3.0-beta.0`
+- Minimum Meteor version is now `2.8.1`, compatible with `v3.0`
 - All collection calls have been migrated to async
 - Removed `aldeed:schema-index` as its functionality has been replaced by Meteor default `createIndexAsync` method.
 - Added `aldeed:simple-schema`
-- Upgraded `aldeed:collection2` to `v4.0.1`
-- Upgraded `aldeed:schema-deny` to `v4.0.0`
+- Upgraded `aldeed:collection2` to `v4.0.3`
+- Upgraded `aldeed:schema-deny` to `v4.0.1`
+- Replace eslint with Biome
 
 ## v1.8.2 - 2023-12-30
 

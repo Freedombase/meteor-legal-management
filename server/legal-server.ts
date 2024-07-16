@@ -1,13 +1,13 @@
-import { Meteor } from 'meteor/meteor'
-import { check, Match } from 'meteor/check'
-import { LegalCollection } from '../common/legal'
 import { Hook } from 'meteor/callback-hook'
+import { Match, check } from 'meteor/check'
+import { Meteor } from 'meteor/meteor'
+import { LegalCollection } from '../common/legal'
 import type { LegalDocument } from '../legal'
 
 // Add unique compound index for documentAbbr + version
 LegalCollection.createIndexAsync(
   { documentAbbr: 1, version: 1 },
-  { unique: true }
+  { unique: true },
 )
 
 // Other indexes
@@ -30,7 +30,7 @@ Meteor.publish(
 
     const handle = LegalCollection.find(
       { documentAbbr, effectiveAt: { $lte: new Date() } },
-      options
+      options,
     ).observeChanges({
       added(id: string, doc: LegalDocument) {
         if (
@@ -43,9 +43,9 @@ Meteor.publish(
           if (doc.i18n[language].text) doc.text = doc.i18n[language].text
           if (doc.i18n[language].changelog)
             doc.changelog = doc.i18n[language].changelog
-          delete doc.i18n
+          doc.i18n = undefined
         } else if (doc.i18n) {
-          delete doc.i18n
+          doc.i18n = undefined
         }
         sub.added('freedombase:legal', id, doc)
       },
@@ -54,13 +54,13 @@ Meteor.publish(
       },
       removed(id) {
         sub.removed('freedombase:legal', id)
-      }
+      },
     })
     this.ready()
     this.onStop(() => {
       handle.stop()
     })
-  }
+  },
 )
 
 /**
@@ -78,9 +78,9 @@ Meteor.publish('freedombase:legal.getLatestTiny', (documentAbbr) => {
       fields: {
         documentAbbr: 1,
         version: 1,
-        effectiveAt: 1
-      }
-    }
+        effectiveAt: 1,
+      },
+    },
   )
 })
 
@@ -99,7 +99,7 @@ Meteor.publish(
 
     const handle = LegalCollection.find(
       { documentAbbr },
-      { sort: { effectiveAt: -1 } }
+      { sort: { effectiveAt: -1 } },
     ).observeChanges({
       added(id: string, doc: LegalDocument) {
         if (language && doc.language !== language && doc.i18n) {
@@ -107,9 +107,9 @@ Meteor.publish(
           if (doc.i18n[language].text) doc.text = doc.i18n[language].text
           if (doc.i18n[language].changelog)
             doc.changelog = doc.i18n[language].changelog
-          delete doc.i18n
+          doc.i18n = undefined
         } else if (doc.i18n) {
-          delete doc.i18n
+          doc.i18n = undefined
         }
         sub.added('freedombase:legal', id, doc)
       },
@@ -118,13 +118,13 @@ Meteor.publish(
       },
       removed(id) {
         sub.removed('freedombase:legal', id)
-      }
+      },
     })
     this.ready()
     this.onStop(() => {
       handle.stop()
     })
-  }
+  },
 )
 
 /**
@@ -144,7 +144,7 @@ Meteor.publish(
 
     const handle = LegalCollection.find(
       { documentAbbr, version },
-      { limit: 1, sort: { effectiveAt: -1 } }
+      { limit: 1, sort: { effectiveAt: -1 } },
     ).observeChanges({
       added(id: string, doc: LegalDocument) {
         if (
@@ -157,9 +157,9 @@ Meteor.publish(
           if (doc.i18n[language].text) doc.text = doc.i18n[language].text
           if (doc.i18n[language].changelog)
             doc.changelog = doc.i18n[language].changelog
-          delete doc.i18n
+          doc.i18n = undefined
         } else if (doc.i18n) {
-          delete doc.i18n
+          doc.i18n = undefined
         }
         sub.added('freedombase:legal', id, doc)
       },
@@ -168,13 +168,13 @@ Meteor.publish(
       },
       removed(id) {
         sub.removed('freedombase:legal', id)
-      }
+      },
     })
     this.ready()
     this.onStop(() => {
       handle.stop()
     })
-  }
+  },
 )
 
 /**
@@ -189,8 +189,8 @@ Meteor.publish('freedombase:legal.getVersions', (documentAbbr: string) => {
     { documentAbbr },
     {
       fields: { documentAbbr: 1, version: 1, effectiveAt: 1 },
-      sort: { effectiveAt: -1 }
-    }
+      sort: { effectiveAt: -1 },
+    },
   )
 })
 
@@ -229,7 +229,7 @@ Meteor.methods({
     title: string,
     text: string | object,
     changelog: string | object,
-    from: Date = new Date()
+    from: Date = new Date(),
   ) {
     check(documentAbbr, String)
     check(version, String)
@@ -238,8 +238,8 @@ Meteor.methods({
     check(text, Match.OneOf(String, Object))
     check(changelog, Match.Maybe(Match.OneOf(String, Object)))
     check(from, Date)
-    let canAdd: boolean = true
-    canAddLegalHook.forEach((hook) => {
+    let canAdd = true
+    canAddLegalHook.forEachAsync((hook) => {
       const result: boolean = hook(documentAbbr, language, this.userId)
       if (result === false) canAdd = result // once cont is false it will stay false
     })
@@ -251,7 +251,7 @@ Meteor.methods({
       text,
       changelog,
       language,
-      effectiveAt: from
+      effectiveAt: from,
     })
   },
   /**
@@ -274,7 +274,7 @@ Meteor.methods({
     text: string | object,
     changelog: string | object,
     i18n: object,
-    from: Date = new Date()
+    from: Date = new Date(),
   ) {
     check(documentAbbr, String)
     check(version, String)
@@ -284,8 +284,8 @@ Meteor.methods({
     check(changelog, Match.OneOf(String, Object))
     check(from, Date)
     check(i18n, Object)
-    let canAdd: boolean = true
-    canAddLegalHook.forEach((hook) => {
+    let canAdd = true
+    canAddLegalHook.forEachAsync((hook) => {
       const result: boolean = hook(documentAbbr, language, this.userId)
       if (result === false) canAdd = result // once cont is false it will stay false
     })
@@ -296,7 +296,7 @@ Meteor.methods({
       text,
       changelog,
       i18n,
-      effectiveAt: from
+      effectiveAt: from,
     })
   },
   /**
@@ -315,7 +315,7 @@ Meteor.methods({
     title: string,
     text: string | object,
     language: string,
-    changelog: string | object
+    changelog: string | object,
   ) {
     check(documentAbbr, String)
     check(version, String)
@@ -328,13 +328,16 @@ Meteor.methods({
     i18n[language].title = title
     i18n[language].text = text
     i18n[language].changelog = changelog
-    let canAdd: boolean = true
-    canAddLegalHook.forEach((hook) => {
+    let canAdd = true
+    canAddLegalHook.forEachAsync((hook) => {
       const result: boolean = hook(documentAbbr, language, this.userId)
       if (result === false) canAdd = result // once cont is false it will stay false
     })
     if (!canAdd) return null
-    return LegalCollection.updateAsync({ documentAbbr, version }, { $set: { i18n } })
+    return LegalCollection.updateAsync(
+      { documentAbbr, version },
+      { $set: { i18n } },
+    )
   },
   /**
    * Update changelog for the given language.
@@ -346,23 +349,23 @@ Meteor.methods({
   'freedombase:legal.updateChangelog': async function (
     id: string,
     language: string,
-    changelog: string | object
+    changelog: string | object,
   ) {
     check(id, String)
     check(language, String)
     check(changelog, Match.OneOf(String, Object))
     const doc: LegalDocument = LegalCollection.findOne(
       { _id: id },
-      { fields: { language: 1, documentAbbr: 1 } }
+      { fields: { language: 1, documentAbbr: 1 } },
     )
     if (doc) {
-      let canAdd: boolean = true
-      canAddLegalHook.forEach((hook) => {
+      let canAdd = true
+      canAddLegalHook.forEachAsync((hook) => {
         const result: boolean = hook(doc.documentAbbr, language, this.userId)
         if (result === false) canAdd = result // once cont is false it will stay false
       })
       if (!canAdd) return null
-      let set
+      let set = {}
       if (doc.language === language) {
         set = { changelog }
       } else {
@@ -372,5 +375,5 @@ Meteor.methods({
       return LegalCollection.updateAsync({ _id: id }, { $set: set })
     }
     return 0
-  }
+  },
 })
