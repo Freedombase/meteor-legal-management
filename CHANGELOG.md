@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.0.1 - 2024-07-16
+
+- Added option to depend on the latest v2 of `aldeed:simple-schema` as well as v1.13.1
+
 ## v2.0.0 - 2024-07-16
 
 - Minimum Meteor version is now `2.8.1`, compatible with `v3.0`
@@ -13,7 +17,8 @@
 ## v1.8.2 - 2023-12-30
 
 - Update `zodern:types` to v1.0.11
-- Added Meteor `3.0-beta.0` as a supported target to make it easy to perform the initial upgrade, functionality wise it is not yet supported.
+- Added Meteor `3.0-beta.0` as a supported target to make it easy to perform the initial upgrade, functionality wise it
+  is not yet supported.
 
 ## v1.8.1 - 2023-05-24
 
