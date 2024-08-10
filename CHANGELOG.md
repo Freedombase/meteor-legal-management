@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v2.0.2 - 2024-08-10
+
+- Fix use of `observeChanges` to `observeChangesAsync`
+- Updated `zodern:types` to v1.0.13
+
 ## v2.0.1 - 2024-07-16
 
 - Added option to depend on the latest v2 of `aldeed:simple-schema` as well as v1.13.1

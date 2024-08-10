@@ -1,7 +1,7 @@
 /* global Package */
 Package.describe({
   name: 'freedombase:legal-management',
-  version: '2.0.1',
+  version: '2.0.2',
   summary: 'Manage your legal documents and user consent.',
   git: 'https://github.com/freedombase/meteor-legal-management',
   documentation: 'README.md',
@@ -17,7 +17,7 @@ Package.onUse(function (api) {
     'ddp',
     'typescript',
     'callback-hook',
-    'zodern:types@1.0.11',
+    'zodern:types@1.0.13',
   ])
   api.use([
     'aldeed:collection2@4.0.3',

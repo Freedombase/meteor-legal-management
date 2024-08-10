@@ -22,16 +22,18 @@ LegalCollection.createIndexAsync({ documentId: 1 })
  */
 Meteor.publish(
   'freedombase:legal.getLatest',
-  function (documentAbbr, language) {
+  async function (documentAbbr, language) {
     check(documentAbbr, String)
     check(language, Match.Maybe(String))
     const sub = this
     const options = { limit: 1, sort: { effectiveAt: -1 } }
 
-    const handle = LegalCollection.find(
+    const cursor = LegalCollection.find(
       { documentAbbr, effectiveAt: { $lte: new Date() } },
       options,
-    ).observeChanges({
+    )
+
+    const handle = await cursor.observeChangesAsync({
       added(id: string, doc: LegalDocument) {
         if (
           language &&
@@ -92,15 +94,16 @@ Meteor.publish('freedombase:legal.getLatestTiny', (documentAbbr) => {
  */
 Meteor.publish(
   'freedombase:legal.getAll',
-  function (documentAbbr: string, language: string) {
+  async function (documentAbbr: string, language: string) {
     check(documentAbbr, String)
     check(language, Match.Maybe(String))
     const sub = this
 
-    const handle = LegalCollection.find(
+    const cursor = LegalCollection.find(
       { documentAbbr },
       { sort: { effectiveAt: -1 } },
-    ).observeChanges({
+    )
+    const handle = await cursor.observeChangesAsync({
       added(id: string, doc: LegalDocument) {
         if (language && doc.language !== language && doc.i18n) {
           if (doc.i18n[language].title) doc.title = doc.i18n[language].title
@@ -136,16 +139,17 @@ Meteor.publish(
  */
 Meteor.publish(
   'freedombase:legal.get',
-  function (documentAbbr: string, version: string, language: string) {
+  async function (documentAbbr: string, version: string, language: string) {
     check(documentAbbr, String)
     check(version, String)
     check(language, Match.Maybe(String))
     const sub = this
 
-    const handle = LegalCollection.find(
+    const cursor = LegalCollection.find(
       { documentAbbr, version },
       { limit: 1, sort: { effectiveAt: -1 } },
-    ).observeChanges({
+    )
+    const handle = await cursor.observeChangesAsync({
       added(id: string, doc: LegalDocument) {
         if (
           language &&
