@@ -1,6 +1,6 @@
 {
   "name": "meteor-legal-management",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "private": true,
   "description": "Management of legal documents like Terms of Service and user consent made easy.",
   "main": "package.js",
@@ -24,7 +24,7 @@
   "author": "Jan Dvorak",
   "license": "MIT",
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
+    "@biomejs/biome": "2.4.13",
     "all-contributors-cli": "^6.26.1"
   }
 }

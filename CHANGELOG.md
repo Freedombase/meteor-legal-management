@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v2.0.3 - 2026-05-01
+
+- Update deps
+- Support `aldeed:schema-deny` v5
+
 ## v2.0.2 - 2024-08-10
 
 - Fix use of `observeChanges` to `observeChangesAsync`
