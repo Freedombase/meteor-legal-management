@@ -1,24 +1,23 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "files": {
-    "ignore": [
-      ".meteor/**",
-      ".vscode/**",
-      "coverage/**",
-      "node_modules/**",
-      "storybook-static/**",
-      "private/**",
-      "packages/**",
-      "superface/**"
+    "includes": [
+      "**",
+      "!**/.meteor/**",
+      "!**/.vscode/**",
+      "!**/coverage/**",
+      "!**/node_modules/**",
+      "!**/storybook-static/**",
+      "!**/private/**",
+      "!**/packages/**",
+      "!**/superface/**"
     ]
   },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "complexity": {
         "useArrowFunction": "off"
       }
