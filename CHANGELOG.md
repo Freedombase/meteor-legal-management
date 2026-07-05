@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.0.4
+
+- Support `aldeed:simple-schema` v3
+
 ## v2.0.3 - 2026-05-01
 
 - Update deps
