@@ -8,7 +8,7 @@ Package.describe({
 })
 
 Package.onUse(function (api) {
-  api.versionsFrom(['2.8.1', '3.0', '3.4'])
+  api.versionsFrom(['2.8.1', '3.0', '3.4', '3.5'])
   api.use([
     'meteor',
     'ecmascript',
