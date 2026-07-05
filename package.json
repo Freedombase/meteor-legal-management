@@ -24,7 +24,7 @@
   "author": "Jan Dvorak",
   "license": "MIT",
   "devDependencies": {
-    "@biomejs/biome": "2.4.13",
+    "@biomejs/biome": "2.5.2",
     "all-contributors-cli": "^6.26.1"
   }
 }
