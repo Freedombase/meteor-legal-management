@@ -1,5 +1,5 @@
 import { Hook } from 'meteor/callback-hook'
-import { Match, check } from 'meteor/check'
+import { check, Match } from 'meteor/check'
 import { Meteor } from 'meteor/meteor'
 import { LegalAgreementCollection } from '../common/agreement'
 import { LegalCollection } from '../common/legal'

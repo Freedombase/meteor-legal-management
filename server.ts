@@ -2,15 +2,15 @@ import './server/agreement-server'
 import './server/legal-server'
 
 export {
+  LegalAgreement,
   LegalAgreementCollection,
   LegalCollection,
-  LegalAgreement,
   LegalDocument,
 } from './common'
-export { canAddLegalHook } from './server/legal-server'
 export {
-  beforeAgreedHook,
-  beforeRevokedHook,
   afterAgreedHook,
   afterRevokedHook,
+  beforeAgreedHook,
+  beforeRevokedHook,
 } from './server/agreement-server'
+export { canAddLegalHook } from './server/legal-server'
