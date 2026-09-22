@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v2.1.0
+
+- Agreements can belong to something a user acts for, such as an organization: `ownerType` on the record, `agreedBy` on each agreement and history entry
+- New server functions `agreeTo(actor, what)` and `revokeFrom(actor, what)`; the `agreeBy` and `revokeBy` methods call them for the logged-in user
+- Agreement hooks receive a third argument `{ ownerType, agreedBy }` (fourth for the after hooks); existing two-argument hooks keep working
+- Client updates of agreement records are allowed only for user-owned records
+
 ## v2.0.4
 
 - Support `aldeed:simple-schema` v3

@@ -1,7 +1,7 @@
 /* global Package */
 Package.describe({
   name: 'freedombase:legal-management',
-  version: '2.0.4',
+  version: '2.1.0',
   summary: 'Manage your legal documents and user consent.',
   git: 'https://github.com/freedombase/meteor-legal-management',
   documentation: 'README.md',
@@ -32,7 +32,7 @@ Package.onUse(function (api) {
 
 Package.onTest(function (api) {
   api.use('ecmascript')
-  api.use('tinytest')
+  api.use(['tinytest', 'random'])
   api.use('typescript')
   api.use('freedombase:legal-management')
   api.mainModule('legal-tests.ts', ['client', 'server'])
