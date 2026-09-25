@@ -55,6 +55,8 @@ interface CanAddLegalHook {
 export let canAddLegalHook: CanAddLegalHook
 
 export declare type AgreementActor = {
+  /** Original acceptance time when replaying a server-owned consent record. */
+  acceptedAt?: Date
   /** Who the agreement belongs to. */
   ownerId: string
   /** 'user' (default) or the kind of thing a user acts for, like 'organization'. */

@@ -28,6 +28,12 @@ Package.onUse(function (api) {
 
   api.mainModule('common.ts', 'client')
   api.mainModule('server.ts', 'server')
+  // Keep the server entry point's dependencies in the server isopack.
+  api.addFiles(
+    ['server/agreement-server.ts', 'server/legal-server.ts'],
+    'server',
+    { lazy: true },
+  )
 })
 
 Package.onTest(function (api) {

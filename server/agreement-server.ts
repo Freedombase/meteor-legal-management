@@ -12,9 +12,10 @@ LegalAgreementCollection.createIndexAsync({ ownerId: 1 })
  * @param ownerId {String}
  * @returns {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
+Meteor.publish('freedombase:legal.agreements.for', function (ownerId = 'user') {
   check(ownerId, String)
-  const userId = Meteor.userId()
+  const userId = this.userId
+  if (!userId || (ownerId !== 'user' && ownerId !== userId)) return this.ready()
 
   return LegalAgreementCollection.find(
     { ownerId: ownerId === 'user' ? userId : ownerId },
@@ -35,38 +36,48 @@ Meteor.publish('freedombase:legal.agreements.for', (ownerId = 'user') => {
  * @param ownerId {String}
  * @returns {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.agreements.history', (ownerId = 'user') => {
-  check(ownerId, String)
-  const userId = Meteor.userId()
+Meteor.publish(
+  'freedombase:legal.agreements.history',
+  function (ownerId = 'user') {
+    check(ownerId, String)
+    const userId = this.userId
+    if (!userId || (ownerId !== 'user' && ownerId !== userId))
+      return this.ready()
 
-  return LegalAgreementCollection.find(
-    { ownerId: ownerId === 'user' ? userId : ownerId },
-    {
-      fields: {
-        ownerId: 1,
-        history: 1,
-        updatedAt: 1,
+    return LegalAgreementCollection.find(
+      { ownerId: ownerId === 'user' ? userId : ownerId },
+      {
+        fields: {
+          ownerId: 1,
+          history: 1,
+          updatedAt: 1,
+        },
+        limit: 1,
+        sort: { ownerId: 1 },
       },
-      limit: 1,
-      sort: { ownerId: 1 },
-    },
-  )
-})
+    )
+  },
+)
 
 /**
  * Get all the data
  * @param ownerId {String}
  * @returns {Mongo.Cursor}
  */
-Meteor.publish('freedombase:legal.agreements.full', (ownerId = 'user') => {
-  check(ownerId, String)
-  const userId = Meteor.userId()
+Meteor.publish(
+  'freedombase:legal.agreements.full',
+  function (ownerId = 'user') {
+    check(ownerId, String)
+    const userId = this.userId
+    if (!userId || (ownerId !== 'user' && ownerId !== userId))
+      return this.ready()
 
-  return LegalAgreementCollection.find(
-    { ownerId: ownerId === 'user' ? userId : ownerId },
-    { limit: 1, sort: { userId: -1 } },
-  )
-})
+    return LegalAgreementCollection.find(
+      { ownerId: ownerId === 'user' ? userId : ownerId },
+      { limit: 1, sort: { userId: -1 } },
+    )
+  },
+)
 
 export const beforeAgreedHook = new Hook()
 export const afterAgreedHook = new Hook()
@@ -74,6 +85,8 @@ export const beforeRevokedHook = new Hook()
 export const afterRevokedHook = new Hook()
 
 export type AgreementActor = {
+  /** Original acceptance time when replaying a server-owned consent record. */
+  acceptedAt?: Date
   /** Who the agreement belongs to. */
   ownerId: string
   /** 'user' (default) or the kind of thing a user acts for, like 'organization'. */
@@ -121,7 +134,7 @@ export async function agreeTo(
   for (const legalDoc of listOf(what)) {
     const doc = await currentDocument(legalDoc)
     const history = {
-      createdAt: new Date(),
+      createdAt: actor.acceptedAt || new Date(),
       agreement: legalDoc,
       action: 'agreed',
       agreedBy,

@@ -84,18 +84,9 @@ const schema = new SimpleSchema({
 
 LegalAgreementCollection.attachSchema(schema)
 
+// Consent writes go through the authenticated methods or server-side agreeTo.
 LegalAgreementCollection.allow({
-  insert(userId) {
-    return !!userId
-  },
-  update(userId, document: LegalAgreement) {
-    // Records owned by something other than a user change only through server code.
-    return (
-      userId === document.ownerId &&
-      (!document.ownerType || document.ownerType === 'user')
-    )
-  },
-  remove() {
-    return false
-  },
+  insert: () => false,
+  update: () => false,
+  remove: () => false,
 })

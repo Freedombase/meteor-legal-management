@@ -199,7 +199,7 @@ await agreeTo(
 Import: `import { revokeFrom } from 'meteor/freedombase:legal-management'`
 Same arguments as `agreeTo`.
 
-Records with an `ownerType` other than `user` cannot be updated from the client. Read them with the `freedombase:legal.agreements.for` publication, passing the owner id, or through your own authorized publication.
+Client collection writes are denied; consent is recorded through authenticated methods or server-side `agreeTo`. The built-in publications expose only the signed-in user’s own record. Read organization-owned records through an authorized application service or publication.
 
 ### Hooks
 Both of the above methods have hook on before and after action. They are:
