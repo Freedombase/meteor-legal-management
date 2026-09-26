@@ -47,16 +47,16 @@ If the users have already agreed to legal documents fill `agreements` array with
 
 ```js
 import { Meteor } from 'meteor/meteor';
-import { LegalAgreementCollection } from 'meteor/freedombase:legal-management';
+import { agreeTo, LegalAgreementCollection } from 'meteor/freedombase:legal-management';
 
 Meteor.users.after.insert((userId, document) => {
   LegalAgreementCollection.insert({ ownerId: document._id, agreements: [], history: [] }, (err, id) => {
       if (id) {
         // the user had to agree to be able to access the registration page
         // TODO adjust to your needs
-        Meteor.call('freedombase:legal.agreements.agreeBy', 'tos', document._id);
+        agreeTo({ ownerId: document._id }, 'tos');
         // or
-        // Meteor.call('freedombase:legal.agreements.agreeBy', ['tos', 'privacy', 'copyright'], document._id);
+        // agreeTo({ ownerId: document._id }, ['tos', 'privacy', 'copyright']);
       }
     });
 });
@@ -170,7 +170,7 @@ Gets a document by its id.
 #### `freedombase:legal.agreements.agreeBy`
 Give agreement to the given document by the currently logged in user.
    * @param `what` {String|Array} Ids or abbreviations of the legal document
-   * @param `userId` {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
+   * @param `userId` {String} Honoured only for server calls without a client connection. Server code running inside a client method (e.g. account creation hooks) inherits its connection, so call `agreeTo` there instead. Logged in user will take precedent before this param.
    * @returns {Array} Array of results of update functions
 
 #### `freedombase:legal.agreements.revokeBy`
@@ -178,31 +178,54 @@ Revoke agreement to the given document by the currently logged in user.
    * @param `what` {String|Array} Ids or abbreviations of the legal document
    * @returns {Array} Array of results of update functions
 
+### Server functions
+
+Agreements normally belong to the user who gives them. When a user agrees on behalf of something else, such as an organization they administer, call these from server code instead of the methods. The record is stored with `ownerId` set to that owner, `ownerType` naming what it is, and `agreedBy` recording the acting user on each agreement and history entry.
+
+#### `agreeTo(actor, what)`
+Import: `import { agreeTo } from 'meteor/freedombase:legal-management'`
+   * @param `actor` {Object} `{ ownerId, ownerType = 'user', agreedBy = ownerId }`
+   * @param `what` {String|Array} Ids or abbreviations of the legal document
+   * @returns {Array} Array of results of update functions
+
+```js
+await agreeTo(
+  { ownerId: organization._id, ownerType: 'organization', agreedBy: this.userId },
+  ['organizationTerms', 'organizationPublishingAgreement'],
+)
+```
+
+#### `revokeFrom(actor, what)`
+Import: `import { revokeFrom } from 'meteor/freedombase:legal-management'`
+Same arguments as `agreeTo`.
+
+Client collection writes are denied; consent is recorded through authenticated methods or server-side `agreeTo`. The built-in publications expose only the signed-in user’s own record. Read organization-owned records through an authorized application service or publication.
+
 ### Hooks
 Both of the above methods have hook on before and after action. They are:
 
 #### `beforeAgreedHook`
 Import: `import { beforeAgreedHook } from 'meteor/freedombase:legal-management`
 Part of the `freedombase:legal.agreements.agreeBy` method and triggers before any DB action takes place. If false is returned, then the DB action will not execute, so you need to return `true` if you want the execution of the method to continue.
-You can create a new hook by registering it: `beforeAgreedHook.register((whichAgreement, userId) => {})`
-This hook will receive in the first argument which agreement is the subject of the call and in second the user id.
+You can create a new hook by registering it: `beforeAgreedHook.register((whichAgreement, ownerId, { ownerType, agreedBy }) => {})`
+This hook will receive in the first argument which agreement is the subject of the call, in second the owner id (the user id for user-owned agreements) and in third the owner type and the acting user.
 
 #### `afterAgreedHook`
 Import: `import { afterAgreedHook } from 'meteor/freedombase:legal-management`
 Part of the `freedombase:legal.agreements.agreeBy` method and triggers after DB actions take place.
-You can create a new hook by registering it: `afterAgreedHook.register((whichAgreement, userId, dbResults) => {})`
-This hook will receive in the first argument which agreement is the subject of the call and in second the user id, the final one will be the result of the DB action.
+You can create a new hook by registering it: `afterAgreedHook.register((whichAgreement, ownerId, dbResults, { ownerType, agreedBy }) => {})`
+This hook will receive in the first argument which agreement is the subject of the call, in second the owner id, in third the result of the DB action and in fourth the owner type and the acting user.
 
 #### `beforeRevokedHook`
 Import: `import { beforeRevokedHook } from 'meteor/freedombase:legal-management`
 Part of the `freedombase:legal.agreements.revokeBy` method and triggers before any DB action takes place.
-You can create a new hook by registering it: `beforeRevokedHook.register((whichAgreement, userId) => {})`
-This hook will receive in the first argument which agreement is the subject of the call and in second the user id.
+You can create a new hook by registering it: `beforeRevokedHook.register((whichAgreement, ownerId, { ownerType, agreedBy }) => {})`
+This hook will receive in the first argument which agreement is the subject of the call, in second the owner id and in third the owner type and the acting user.
 
 #### `afterRevokedHook`
 Import: `import { afterRevokedHook } from 'meteor/freedombase:legal-management`
 Part of the `freedombase:legal.agreements.revokeBy` method and triggers after DB actions take place.
-You can create a new hook by registering it: `afterRevokedHook.register((whichAgreement, userId, dbResults) => {})`
+You can create a new hook by registering it: `afterRevokedHook.register((whichAgreement, ownerId, dbResults, { ownerType, agreedBy }) => {})`
 This hook will receive in the first argument which agreement is the subject of the call and in second the user id, the final one will be the result of the DB action.
 
 ### Publications

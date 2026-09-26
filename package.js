@@ -1,7 +1,7 @@
 /* global Package */
 Package.describe({
   name: 'freedombase:legal-management',
-  version: '2.0.4',
+  version: '2.1.0',
   summary: 'Manage your legal documents and user consent.',
   git: 'https://github.com/freedombase/meteor-legal-management',
   documentation: 'README.md',
@@ -28,11 +28,17 @@ Package.onUse(function (api) {
 
   api.mainModule('common.ts', 'client')
   api.mainModule('server.ts', 'server')
+  // Keep the server entry point's dependencies in the server isopack.
+  api.addFiles(
+    ['server/agreement-server.ts', 'server/legal-server.ts'],
+    'server',
+    { lazy: true },
+  )
 })
 
 Package.onTest(function (api) {
   api.use('ecmascript')
-  api.use('tinytest')
+  api.use(['tinytest', 'random'])
   api.use('typescript')
   api.use('freedombase:legal-management')
   api.mainModule('legal-tests.ts', ['client', 'server'])

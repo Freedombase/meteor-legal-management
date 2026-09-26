@@ -1,0 +1,2 @@
+# Vitest runs outside Meteor; keep its mocks and imports out of package builds.
+**/*.vitest.test.ts
