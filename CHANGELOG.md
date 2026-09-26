@@ -6,6 +6,7 @@
 - New server functions `agreeTo(actor, what)` and `revokeFrom(actor, what)`; the `agreeBy` and `revokeBy` methods call them for the logged-in user
 - Agreement hooks receive a third argument `{ ownerType, agreedBy }` (fourth for the after hooks); existing two-argument hooks keep working
 - Client updates of agreement records are allowed only for user-owned records
+- `agreeBy` ignores the `userId` argument on calls from a client connection, so clients can no longer record agreement for another user or an organization; server code running inside a client method (such as account creation hooks) should call `agreeTo`
 
 ## v2.0.4
 

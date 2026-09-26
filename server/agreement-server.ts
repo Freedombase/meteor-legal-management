@@ -238,7 +238,7 @@ Meteor.methods({
   /**
    * Give agreement to the given document.
    * @param what {String|Array} Ids or abbreviations of the legal document
-   * @param userId {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
+   * @param userId {String} Honoured only for server calls without a client connection. Server code running inside a client method (e.g. account creation hooks) inherits its connection, so call `agreeTo` there instead. Logged in user will take precedent before this param.
    * @return {Array} Array of results of update functions
    */
   'freedombase:legal.agreements.agreeBy': async function (
@@ -247,7 +247,9 @@ Meteor.methods({
   ) {
     check(what, Match.OneOf(String, [String]))
     check(userId, Match.Maybe(String))
-    const ownerId = this.userId || Meteor.userId() || userId
+    // A client must not agree on behalf of another user or an organization.
+    const ownerId =
+      this.userId || Meteor.userId() || (this.connection ? null : userId)
     if (!ownerId) {
       throw new Meteor.Error('User needs to be logged in to agree.')
     }

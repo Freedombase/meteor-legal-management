@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
     ) => unknown
   >,
   rules: {} as Record<string, (...args: unknown[]) => boolean>,
+  methods: {} as Record<string, (this: unknown, ...args: unknown[]) => unknown>,
   find: vi.fn(),
   findOne: vi.fn(),
   update: vi.fn(),
@@ -19,13 +20,16 @@ vi.mock('meteor/meteor', () => ({
     publish: (name: string, handler: (typeof mocks.publications)[string]) => {
       mocks.publications[name] = handler
     },
-    methods: vi.fn(),
+    methods: (methods: typeof mocks.methods) => {
+      Object.assign(mocks.methods, methods)
+    },
+    userId: () => null,
     Error: class extends Error {},
   },
 }))
 vi.mock('meteor/check', () => ({
   check: vi.fn(),
-  Match: { Optional: vi.fn(), OneOf: vi.fn() },
+  Match: { Optional: vi.fn(), OneOf: vi.fn(), Maybe: vi.fn() },
 }))
 vi.mock('meteor/callback-hook', () => ({
   Hook: class {
@@ -122,4 +126,18 @@ it('preserves a persisted acceptance time when server setup recovery writes cons
       }),
     }),
   )
+})
+it('ignores a client-supplied userId so clients cannot agree for someone else', async () => {
+  const agreeBy = mocks.methods['freedombase:legal.agreements.agreeBy']
+  const connection = { id: 'client' }
+  await expect(
+    agreeBy.call({ userId: null, connection }, ['terms1'], 'org1'),
+  ).rejects.toThrow('User needs to be logged in to agree.')
+  expect(mocks.upsert).not.toHaveBeenCalled()
+  await agreeBy.call({ userId: 'attacker', connection }, ['terms1'], 'org1')
+  await agreeBy.call({ userId: null, connection: null }, ['terms1'], 'newUser')
+  expect(mocks.upsert.mock.calls.map(([query]) => query.ownerId)).toEqual([
+    'attacker',
+    'newUser',
+  ])
 })

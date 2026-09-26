@@ -47,16 +47,16 @@ If the users have already agreed to legal documents fill `agreements` array with
 
 ```js
 import { Meteor } from 'meteor/meteor';
-import { LegalAgreementCollection } from 'meteor/freedombase:legal-management';
+import { agreeTo, LegalAgreementCollection } from 'meteor/freedombase:legal-management';
 
 Meteor.users.after.insert((userId, document) => {
   LegalAgreementCollection.insert({ ownerId: document._id, agreements: [], history: [] }, (err, id) => {
       if (id) {
         // the user had to agree to be able to access the registration page
         // TODO adjust to your needs
-        Meteor.call('freedombase:legal.agreements.agreeBy', 'tos', document._id);
+        agreeTo({ ownerId: document._id }, 'tos');
         // or
-        // Meteor.call('freedombase:legal.agreements.agreeBy', ['tos', 'privacy', 'copyright'], document._id);
+        // agreeTo({ ownerId: document._id }, ['tos', 'privacy', 'copyright']);
       }
     });
 });
@@ -170,7 +170,7 @@ Gets a document by its id.
 #### `freedombase:legal.agreements.agreeBy`
 Give agreement to the given document by the currently logged in user.
    * @param `what` {String|Array} Ids or abbreviations of the legal document
-   * @param `userId` {String} Optionally send userId in cases when user is logging in or creating account. Logged in user will take precedent before this param.
+   * @param `userId` {String} Honoured only for server calls without a client connection. Server code running inside a client method (e.g. account creation hooks) inherits its connection, so call `agreeTo` there instead. Logged in user will take precedent before this param.
    * @returns {Array} Array of results of update functions
 
 #### `freedombase:legal.agreements.revokeBy`
