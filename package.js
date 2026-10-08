@@ -20,7 +20,7 @@ Package.onUse(function (api) {
     'zodern:types@1.0.13',
   ])
   api.use([
-    'aldeed:collection2@4.0.3',
+    'aldeed:collection2@4.0.3 || 5.0.0',
     'aldeed:schema-deny@4.0.1 || 5.0.0',
     'aldeed:simple-schema@1.13.1 || 2.0.0 || 3.0.0',
   ])
