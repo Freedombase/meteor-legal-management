@@ -14,6 +14,11 @@ const schema = new SimpleSchema({
   ownerId: {
     type: SimpleSchema.RegEx.Id,
   },
+  /** What `ownerId` points at: a user (default) or something a user acts for, like an organization. */
+  ownerType: {
+    type: String,
+    optional: true,
+  },
   agreements: {
     type: Array,
     optional: true,
@@ -33,6 +38,11 @@ const schema = new SimpleSchema({
     type: Boolean,
     defaultValue: false,
   },
+  /** The user who agreed on the owner's behalf; same as `ownerId` for user-owned records. */
+  'agreements.$.agreedBy': {
+    type: SimpleSchema.RegEx.Id,
+    optional: true,
+  },
   history: {
     type: Array,
     optional: true,
@@ -50,6 +60,10 @@ const schema = new SimpleSchema({
   'history.$.action': {
     type: String,
     allowedValues: ['revoked', 'agreed', 'revision'],
+  },
+  'history.$.agreedBy': {
+    type: SimpleSchema.RegEx.Id,
+    optional: true,
   },
   createdAt: {
     type: Date,
@@ -70,14 +84,9 @@ const schema = new SimpleSchema({
 
 LegalAgreementCollection.attachSchema(schema)
 
+// Consent writes go through the authenticated methods or server-side agreeTo.
 LegalAgreementCollection.allow({
-  insert(userId) {
-    return !!userId
-  },
-  update(userId, document: LegalAgreement) {
-    return userId === document.ownerId
-  },
-  remove() {
-    return false
-  },
+  insert: () => false,
+  update: () => false,
+  remove: () => false,
 })
